@@ -1,28 +1,62 @@
 const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
-type Booking {
-    _id: ID!
-    event: Event!
-    user: User!
-    createdAt: String!
-    updatedAt: String!
+scalar DateTime
+
+input PaginationArg {
+  skip: Int = 0
+  limit: Int = 0
 }
 
-type Event {
+
+type Source {
   _id: ID!
   title: String!
   description: String!
-  price: Float!
-  date: String!
+  category: String!
+  type: Type!
+  tags: [String!]
   creator: User!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input SourceInput {
+  title: String!
+  description: String!
+  category: String!
+  type: ID!
+  tags: [String!]
+}
+
+input SourceInputEdit {
+  title: String!
+  description: String!
+  category: String!
+  type: ID!
+  tags: [String!]
+}
+
+type Type {
+  _id: ID!
+  name: String!
+  desc: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+input TypeInput {
+  name: String!
+  desc: String
+}
+input TypeInputEdit {
+  name: String
+  desc: String
 }
 
 type User {
   _id: ID!
   email: String!
   password: String
-  createdEvents: [Event!]
 }
 
 type AuthData {
@@ -31,12 +65,6 @@ type AuthData {
   tokenExpiration: Int!
 }
 
-input EventInput {
-  title: String!
-  description: String!
-  price: Float!
-  date: String!
-}
 
 input UserInput {
   email: String!
@@ -44,16 +72,22 @@ input UserInput {
 }
 
 type RootQuery {
-    events: [Event!]!
-    bookings: [Booking!]!
+    types(pagination: PaginationArg= {}): [Type!]!
+    type(_id: ID!): Type!
+    events: [Source!]!
     login(email: String!, password: String!): AuthData!
 }
 
 type RootMutation {
-    createEvent(eventInput: EventInput): Event
+    createType(input: TypeInput): Type
+    updateType(_id: ID!, input: TypeInputEdit): Type
+    deleteType(_id: ID!): Type
+
+    createSource(input: SourceInput): Source
+    updateSource(_id: ID!, input: SourceInputEdit): Source
+    deleteSource(_id: ID!): Source
+
     createUser(userInput: UserInput): User
-    bookEvent(eventId: ID!): Booking!
-    cancelBooking(bookingId: ID!): Event!
 }
 
 schema {
