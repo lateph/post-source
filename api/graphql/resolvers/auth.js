@@ -8,18 +8,37 @@ module.exports = {
     try {
       const existingUser = await User.findOne({ email: args.userInput.email });
       if (existingUser) {
-        throw new Error('User exists already.');
+        console.log("error")
+        return {
+          errors: {
+            'email': "Email Already Exists",
+            'password': ""
+          },
+        }
       }
       const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
 
-      const user = new User({
+      const userNew = new User({
         email: args.userInput.email,
         password: hashedPassword
       });
 
-      const result = await user.save();
+      const result = await userNew.save();
 
-      return { ...result._doc, password: null, _id: result.id };
+      let user =  { ...result._doc, password: null, _id: result.id };
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        'somesupersecretkey',
+        {
+          expiresIn: '1y'
+        }
+      );
+      let auth = { userId: user._id, token: token, tokenExpiration: 365*24 };
+      console.log(auth)
+      return {
+        user,
+        auth: auth 
+      }
     } catch (err) {
       throw err;
     }

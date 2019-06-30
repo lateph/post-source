@@ -54,21 +54,23 @@ input TypeInputEdit {
 }
 
 type User {
-  _id: ID!
-  email: String!
+  _id: ID
+  email: String
   password: String
 }
-
 type AuthData {
   userId: ID!
   token: String!
   tokenExpiration: Int!
 }
-
-
 input UserInput {
   email: String!
   password: String!
+}
+type CreateUser{
+  errors: User,
+  user: User,
+  auth: AuthData
 }
 
 type RootQuery {
@@ -87,7 +89,7 @@ type RootMutation {
     updateSource(_id: ID!, input: SourceInputEdit): Source
     deleteSource(_id: ID!): Source
 
-    createUser(userInput: UserInput): User
+    createUser(userInput: UserInput): CreateUser
 }
 
 schema {

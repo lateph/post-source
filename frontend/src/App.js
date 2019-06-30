@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-import { Container } from 'reactstrap';
 
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
-import MainNavigation from './components/Navigation/MainNavigation';
+// import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
+import Button from '@material-ui/core/Button';
 
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
   <Route {...rest} render={props => (
@@ -69,7 +68,7 @@ class App extends Component {
               {this.state.token && <Redirect from="/login" to="/" />}
               <AppRoute exact path="/" layout={MainLayout} component={HomePage} />
               <AppRoute path="/login" layout={MainLayout} component={LoginPage} />
-            </Switch>
+            </Switch> */}
           </AuthContext.Provider>
         </React.Fragment>
       </BrowserRouter>
