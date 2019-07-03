@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard'
 import Wizard from './components/Wizard'
 import Cards from './components/Cards'
 import Signup from './pages/Register'
+import CreateBlog from './pages/CreateBlog';
 
 const theme = createMuiTheme({
   palette: {
@@ -78,6 +79,7 @@ class App extends Component {
                 {this.state.token && <Redirect from="/signup" to="/" />}
                 <Route exact path="/" component={Dashboard} />
                 <Route path="/login" component={LoginPage} />
+                <Route path="/create" component={CreateBlog} />
                 <Route exact path='/signup' component={ Signup } />
                 <Route exact path='/wizard' component={ Wizard } />
                 <Route exact path='/cards' component={ Cards } />

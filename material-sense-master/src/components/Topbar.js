@@ -237,6 +237,9 @@ class Topbar extends Component {
                                 <Tab key={2} component={Link} to={{pathname: "/signup", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Signup" />
                               )}
                               {context.token && (
+                                <Tab key={2} component={Link} to={{pathname: "/create", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Create Blog" />
+                              )}
+                              {context.token && (
                                 <Tab key={3} component={Link} to={{pathname: "/profile", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Profile" />
                                 )}
                               {context.token && (
