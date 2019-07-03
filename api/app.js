@@ -22,6 +22,9 @@ app.use((req, res, next) => {
 
 app.use(isAuth);
 
+app.get('/', (req, res) => res.send('Hello World!'))
+
+
 app.use(
   '/graphql',
   graphqlHttp({
