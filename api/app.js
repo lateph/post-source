@@ -39,7 +39,7 @@ mongoose
     `mongodb://localhost:27017/hendra`
   )
   .then(() => {
-    app.listen(8000);
+    app.listen(8000, '0.0.0.0');
   })
   .catch(err => {
     console.log(err);
