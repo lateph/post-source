@@ -100,7 +100,7 @@ class AuthPage extends Component {
     };
 
     this.setState({isLoading: true});
-    fetch('http://localhost:8000/graphql', {
+    fetch(process.env.REACT_APP_URL, {
       method: 'POST',
       body: JSON.stringify(requestBody),
       headers: {
@@ -197,7 +197,7 @@ class AuthPage extends Component {
                       label="Email Address"
                       name="email"
                       autoComplete="email"
-                      error={ this.state.formValidation.email }
+                      error={ this.state.formValidation.email != "" }
                       helperText={ this.state.formValidation.email }
                       onChange={ this.handleChange.bind(this) } 
                     />

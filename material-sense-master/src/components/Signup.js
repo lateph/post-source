@@ -42,7 +42,7 @@ const styles = theme => ({
     paddingBottom: 500
   },
   grid: {
-    margin: `0 ${theme.spacing.unit * 2}px`
+    margin: `0 ${theme.spacing(2)}px`
   },
   smallContainer: {
     width: '60%'
@@ -72,17 +72,17 @@ const styles = theme => ({
     backgroundColor: theme.palette.primary['A100']
   },
   backButton: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
   outlinedButtom: {
     textTransform: 'uppercase',
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   stepper: {
     backgroundColor: 'transparent'
   },
   paper: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(2),
     textAlign: 'left',
     color: theme.palette.text.secondary
   },
@@ -96,7 +96,7 @@ const styles = theme => ({
     width: '100%'
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   }
 })
 
@@ -176,7 +176,7 @@ class Signup extends Component {
         <div className={classes.root}>
           <Back />
           <Grid container justify="center">
-            <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
+            <Grid spacing={1} alignItems="center" justify="center" container className={classes.grid}>
               <Grid item xs={12}>
                 <div className={classes.logo}>
                   <img width={100} height={100} src={logo} alt="" />

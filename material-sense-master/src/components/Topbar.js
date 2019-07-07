@@ -163,23 +163,29 @@ class Topbar extends Component {
     // setMobileMoreAnchorEl(null);
   }
 
-  current = () => {
-    if(this.props.currentPath === '/home') {
-      return 0
+  current = (token) => {
+    if(!token){
+      if(this.props.currentPath === '/home') {
+        return 0
+      }
+      else if(this.props.currentPath === '/login') {
+        return 1
+      }
+      else if(this.props.currentPath === '/signup') {
+        return 2
+      }
     }
-    if(this.props.currentPath === '/login') {
-      return 1
+    else{
+      if(this.props.currentPath === '/home') {
+        return 0
+      }
+      else if(this.props.currentPath === '/profile') {
+        return 2
+      }
+      else if(this.props.currentPath === '/new') {
+        return 1
+      }
     }
-    if(this.props.currentPath === '/signup') {
-      return 2
-    }
-    if(this.props.currentPath === '/profile') {
-      return 3
-    }
-    if(this.props.currentPath === '/cards') {
-      return 4
-    }
-
   }
 
   render() {
@@ -192,7 +198,7 @@ class Topbar extends Component {
           return (
             <AppBar position="absolute" color="default" className={classes.appBar}>
               <Toolbar>
-                  <Grid container spacing={24} alignItems="baseline">
+                  <Grid container spacing={1} alignItems="baseline">
                     <Grid item xs={12} className={classes.flex}>
                       <div className={classes.inline}>
                         <Typography variant="h6" color="inherit" noWrap>
@@ -224,27 +230,21 @@ class Topbar extends Component {
                               </List>
                             </SwipeableDrawer>
                             <Tabs
-                              value={this.current() || this.state.value}
+                              value={this.current(context.token) || this.state.value}
                               indicatorColor="primary"
                               textColor="primary"
                               onChange={this.handleChange}
                             >
                               <Tab key={0} component={Link} to={{pathname: "/", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Home" />
-                              {!context.token && (
-                                <Tab key={1} component={Link} to={{pathname: "/login", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Login" />
-                              )}
-                              {!context.token && (
-                                <Tab key={2} component={Link} to={{pathname: "/signup", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Signup" />
-                              )}
-                              {context.token && (
-                                <Tab key={2} component={Link} to={{pathname: "/create", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Create Blog" />
-                              )}
-                              {context.token && (
-                                <Tab key={3} component={Link} to={{pathname: "/profile", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Profile" />
-                                )}
-                              {context.token && (
-                                <Tab key={99} classes={{root: classes.tabItem}} label="Logout" onClick={this.logout}/>                              
-                              )}
+                              {!context.token && [
+                                <Tab key={1} component={Link} to={{pathname: "/login", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Login" />,
+                                <Tab key={2} component={Link} to={{pathname: "/signup", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Signup" />,                              
+                              ]}
+                              {context.token && [
+                                <Tab key={1} component={Link} to={{pathname: "/new", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Create Blog" />,
+                                <Tab key={2} component={Link} to={{pathname: "/profile", search: this.props.location.search}} classes={{root: classes.tabItem}} label="Profile" />,
+                                <Tab key={3} classes={{root: classes.tabItem}} label="Logout" onClick={this.logout}/>                                
+                              ]}
                             </Tabs>
                           </div>
                         </React.Fragment>

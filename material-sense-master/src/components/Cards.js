@@ -36,7 +36,7 @@ class Cards extends Component {
         <Topbar currentPath={currentPath} />
         <div className={classes.root}>
           <Grid container justify="center"> 
-            <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
+            <Grid spacing={1} alignItems="center" justify="center" container className={classes.grid}>
               <Grid item xs={12}>
                 <SectionHeader title="Cards" subtitle="One page with a list of a collection" />
                 <CardItem />

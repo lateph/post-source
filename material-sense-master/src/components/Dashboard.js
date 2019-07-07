@@ -32,7 +32,7 @@ const styles = theme => ({
   },
   grid: {
     width: 1200,
-    margin: `0 ${theme.spacing.unit * 2}px`,
+    margin: `0 ${theme.spacing(2)}px`,
     [theme.breakpoints.down('sm')]: {
       width: 'calc(100% - 20px)'
     }
@@ -41,15 +41,15 @@ const styles = theme => ({
     opacity: 0.05
   },
   paper: {
-    padding: theme.spacing.unit * 3,
-    margin: theme.spacing.unit * 2,
+    padding: theme.spacing(3),
+    margin: theme.spacing(2),
     textAlign: 'left',
     color: theme.palette.text.secondary
   },
   rangeLabel: {
     display: 'flex',
     justifyContent: 'space-between',
-    paddingTop: theme.spacing.unit * 2
+    paddingTop: theme.spacing(2)
   },
   topBar: {
     display: 'flex',
@@ -58,20 +58,20 @@ const styles = theme => ({
   },
   outlinedButtom: {
     textTransform: 'uppercase',
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   actionButtom: {
     textTransform: 'uppercase',
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: 152,
     height: 36
   },
   blockCenter: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
     textAlign: 'center'
   },
   block: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
   },
   loanAvatar: {
     display: 'inline-block',
@@ -105,8 +105,8 @@ const styles = theme => ({
   },
   mainBadge: {
     textAlign: 'center',
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4)
   }
 });
 
@@ -176,11 +176,11 @@ class Dashboard extends Component {
         <Topbar currentPath={currentPath} />
         <div className={classes.root}>
           <Grid container justify="center" >
-            <Grid spacing={24} alignItems="center" justify="center" container className={classes.grid}>
+            <Grid spacing={1} alignItems="center" justify="center" container className={classes.grid}>
               <Grid item xs={12}>
                 <div className={classes.topBar}>
                   <div className={classes.block}>
-                    <Typography variant="h6" gutterBottom>Dashboard</Typography>
+                    <Typography variant="h6" gutterBottom>AAA{process.env.REACT_APP_URL}</Typography>
                     <Typography variant="body1">
                       Adjust and play with our sliders.
                     </Typography>

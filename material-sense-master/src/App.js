@@ -79,7 +79,7 @@ class App extends Component {
                 {this.state.token && <Redirect from="/signup" to="/" />}
                 <Route exact path="/" component={Dashboard} />
                 <Route path="/login" component={LoginPage} />
-                <Route path="/create" component={CreateBlog} />
+                <Route path="/new" component={CreateBlog} />
                 <Route exact path='/signup' component={ Signup } />
                 <Route exact path='/wizard' component={ Wizard } />
                 <Route exact path='/cards' component={ Cards } />
