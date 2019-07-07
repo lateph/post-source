@@ -41,6 +41,7 @@ type Type {
   _id: ID!
   name: String!
   desc: String
+  total: Int
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -51,6 +52,20 @@ input TypeInput {
 input TypeInputEdit {
   name: String
   desc: String
+}
+
+type Tag {
+  _id: ID!
+  name: String!
+  total: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+input TagInput {
+  name: String!
+}
+input TagInputEdit {
+  name: String
 }
 
 type User {
@@ -84,6 +99,10 @@ type RootMutation {
     createType(input: TypeInput): Type
     updateType(_id: ID!, input: TypeInputEdit): Type
     deleteType(_id: ID!): Type
+
+    createTag(input: TagInput): Tag
+    updateTag(_id: ID!, input: TagInputEdit): Tag
+    deleteTag(_id: ID!): Tag
 
     createSource(input: SourceInput): Source
     updateSource(_id: ID!, input: SourceInputEdit): Source

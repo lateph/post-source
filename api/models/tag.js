@@ -7,10 +7,6 @@ const s = new Schema(
           type: String,
           required: true
       },
-      desc: {
-        type: String,
-        required: false
-      },
       total: {
           type: Number,
           default: 0
@@ -19,4 +15,4 @@ const s = new Schema(
     { timestamps: true}
 );
 
-module.exports = mongoose.model('Type', s);
+module.exports = mongoose.model('Tag', s);
