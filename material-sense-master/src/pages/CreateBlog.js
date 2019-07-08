@@ -13,6 +13,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
+import SelectR from 'react-select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -34,219 +35,11 @@ import Chip from '@material-ui/core/Chip';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Autocomplete from '../components/Autocomplete'
+
 
 const backgroundShape = require('../images/shape.svg');
 
-const suggestions = [
-    { label: 'Afghanistan' },
-    { label: 'Aland Islands' },
-    { label: 'Albania' },
-    { label: 'Algeria' },
-    { label: 'American Samoa' },
-    { label: 'Andorra' },
-    { label: 'Angola' },
-    { label: 'Anguilla' },
-    { label: 'Antarctica' },
-    { label: 'Antigua and Barbuda' },
-    { label: 'Argentina' },
-    { label: 'Armenia' },
-    { label: 'Aruba' },
-    { label: 'Australia' },
-    { label: 'Austria' },
-    { label: 'Azerbaijan' },
-    { label: 'Bahamas' },
-    { label: 'Bahrain' },
-    { label: 'Bangladesh' },
-    { label: 'Barbados' },
-    { label: 'Belarus' },
-    { label: 'Belgium' },
-    { label: 'Belize' },
-    { label: 'Benin' },
-    { label: 'Bermuda' },
-    { label: 'Bhutan' },
-    { label: 'Bolivia, Plurinational State of' },
-    { label: 'Bonaire, Sint Eustatius and Saba' },
-    { label: 'Bosnia and Herzegovina' },
-    { label: 'Botswana' },
-    { label: 'Bouvet Island' },
-    { label: 'Brazil' },
-    { label: 'British Indian Ocean Territory' },
-    { label: 'Brunei Darussalam' },
-  ].map(suggestion => ({
-    value: suggestion.label,
-    label: suggestion.label,
-  }));
-
-const components = {
-    Control,
-    Menu,
-    MultiValue,
-    NoOptionsMessage,
-    Option,
-    Placeholder,
-    SingleValue,
-    ValueContainer,
-};
-
-function NoOptionsMessage(props) {
-    return (
-      <Typography
-        color="textSecondary"
-        className={props.selectProps.classes.noOptionsMessage}
-        {...props.innerProps}
-      >
-        {props.children}
-      </Typography>
-    );
-  }
-  
-  NoOptionsMessage.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    selectProps: PropTypes.object.isRequired,
-  };
-  
-  function inputComponent({ inputRef, ...props }) {
-    return <div ref={inputRef} {...props} />;
-  }
-  
-  inputComponent.propTypes = {
-    inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  };
-
-function Control(props) {
-    const {
-      children,
-      innerProps,
-      innerRef,
-      selectProps: { classes, TextFieldProps },
-    } = props;
-  
-    return (
-      <TextField
-        fullWidth
-        InputProps={{
-          inputComponent,
-          inputProps: {
-            className: classes.input,
-            ref: innerRef,
-            children,
-            ...innerProps,
-          },
-        }}
-        {...TextFieldProps}
-      />
-    );
-  }
-  
-  Control.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-    selectProps: PropTypes.object.isRequired,
-  };
-
-  
-function Option(props) {
-    return (
-      <MenuItem
-        ref={props.innerRef}
-        selected={props.isFocused}
-        component="div"
-        style={{
-          fontWeight: props.isSelected ? 500 : 400,
-        }}
-        {...props.innerProps}
-      >
-        {props.children}
-      </MenuItem>
-    );
-  }
-  
-  Option.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-    isFocused: PropTypes.bool,
-    isSelected: PropTypes.bool,
-  };
-  
-  function Placeholder(props) {
-    return (
-      <Typography
-        color="textSecondary"
-        className={props.selectProps.classes.placeholder}
-        {...props.innerProps}
-      >
-        {props.children}
-      </Typography>
-    );
-  }
-  
-  Placeholder.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    selectProps: PropTypes.object.isRequired,
-  };
-  
-  function SingleValue(props) {
-    return (
-      <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
-        {props.children}
-      </Typography>
-    );
-  }
-  
-  SingleValue.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    selectProps: PropTypes.object.isRequired,
-  };
-  
-  function ValueContainer(props) {
-    return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
-  }
-  
-  ValueContainer.propTypes = {
-    children: PropTypes.node,
-    selectProps: PropTypes.object.isRequired,
-  };
-  
-  function MultiValue(props) {
-    return (
-      <Chip
-        tabIndex={-1}
-        label={props.children}
-        className={clsx(props.selectProps.classes.chip, {
-          [props.selectProps.classes.chipFocused]: props.isFocused,
-        })}
-        onDelete={props.removeProps.onClick}
-        deleteIcon={<CancelIcon {...props.removeProps} />}
-      />
-    );
-  }
-  
-  MultiValue.propTypes = {
-    children: PropTypes.node,
-    isFocused: PropTypes.bool,
-    removeProps: PropTypes.object.isRequired,
-    selectProps: PropTypes.object.isRequired,
-  };
-
-  function Menu(props) {
-    return (
-      <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
-        {props.children}
-      </Paper>
-    );
-  }
-  
-  Menu.propTypes = {
-    children: PropTypes.node,
-    innerProps: PropTypes.object,
-    selectProps: PropTypes.object,
-  };
-  
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -394,6 +187,53 @@ class AuthPage extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
 
+  fetchDatas() {
+    this.setState({ isLoading: true });
+    const requestBody = {
+      query: `
+          query {
+            events {
+              _id
+              title
+              description
+              date
+              price
+              creator {
+                _id
+                email
+              }
+            }
+          }
+        `
+    };
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed!');
+        }
+        return res.json();
+      })
+      .then(resData => {
+        const events = resData.data.events;
+        if (this.isActive) {
+          this.setState({ events: events, isLoading: false });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        if (this.isActive) {
+          this.setState({ isLoading: false });
+        }
+      });
+  }
+
   render() {
     const currentPath = this.props.location.pathname
     const { classes } = this.props;
@@ -446,35 +286,46 @@ class AuthPage extends Component {
                         onEditorStateChange={this.onEditorStateChange}
                     />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                     {/* <TextField
                         id="type"
                         name="type"
                         label="Type"
                         fullWidth
                     /> */}
-                    <FormControl fullWidth>
-                        <InputLabel>Type</InputLabel>
-                        <Select
-                            
-                            id="type"
-                            name="type"
-                            label="Type"
-                            inputProps={{
-                                name: 'age',
-                                id: 'age-simple',
-                            }}
-                            >
-                            <MenuItem value={10}>Source Code</MenuItem>
-                            <MenuItem value={20}>Application</MenuItem>
-                            <MenuItem value={30}>eBook</MenuItem>
-                            <MenuItem value={40}>Other</MenuItem>
-                        </Select>
+                    <FormControl component="fieldset">
+                      <FormLabel component="legend">Category</FormLabel>
+                      <RadioGroup aria-label="position" name="position" row>
+                        <FormControlLabel
+                          value="Free"
+                          control={<Radio color="primary" />}
+                          label="Top"
+                          labelPlacement="end"
+                        />
+                        <FormControlLabel
+                          value="Trial"
+                          control={<Radio color="primary" />}
+                          label="Start"
+                          labelPlacement="end"
+                        />
+                        <FormControlLabel
+                          value="Buy"
+                          control={<Radio color="primary" />}
+                          label="Bottom"
+                          labelPlacement="end"
+                        />
+                        <FormControlLabel
+                          value="end"
+                          control={<Radio color="primary" />}
+                          label="End"
+                          labelPlacement="end"
+                        />
+                      </RadioGroup>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                 <FormControl fullWidth>
-                        <InputLabel>Category</InputLabel>
+                        <InputLabel>Type</InputLabel>
                         <Select
                             id="category"
                             name="category"
@@ -492,20 +343,7 @@ class AuthPage extends Component {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                    <Select
-                        inputId="react-select-multiple"
-                        TextFieldProps={{
-                            label: 'Countries',
-                            InputLabelProps: {
-                            htmlFor: 'react-select-multiple',
-                            shrink: true,
-                            },
-                            placeholder: 'Select multiple countries',
-                        }}
-                        options={suggestions}
-                        components={components}
-                        isMulti
-                    />
+                  <Autocomplete />
                 </Grid>
             </Grid>
             <div className={classes.buttons}>
