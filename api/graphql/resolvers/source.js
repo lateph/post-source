@@ -1,5 +1,7 @@
 const Source = require('../../models/source');
 const User = require('../../models/user');
+const validate = require("validate.js");
+const { isAuthenticated } = require('../../helpers/is-auth')
 
 const { transformSource } = require('./merge');
 
@@ -15,29 +17,66 @@ module.exports = {
     }
   },
   createSource: async (args, req) => {
-    if (!req.isAuth) {
+    if (isAuthenticated(req)) {
       throw new Error('Unauthenticated!');
     }
+    const constraints = {
+      title: {
+        presence: {allowEmpty: false},
+      },
+      shortDesc: {
+        presence: {allowEmpty: false},
+      },
+      desc: {
+        presence: {allowEmpty: false},
+      },
+      category: {
+        presence: {allowEmpty: false},
+      },
+      type2: {
+        presence: {allowEmpty: false},
+      }
+    };
+    console.log(req.user.userId)
+    console.log(args.input.type)
+    // return
+    const errors = validate({
+      title: args.input.title,
+      shortDesc: args.input.shortDesc,
+      desc: args.input.desc,
+      category: args.input.category,
+      type2: args.input.type,
+    }, constraints);
+    if(errors){
+      console.log("nyantol error", errors)
+      if(errors["type2"]){
+        errors["type"] = errors["type2"]
+      }
+      // if(errors[""])
+      // console.log("nyantol error", args)
+      return {
+        errors,
+      }
+    }
     const source = new Source({
-      title: args.sourceInput.title,
-      description: args.sourceInput.description,
-      price: +args.sourceInput.price,
-      date: new Date(args.sourceInput.date),
-      creator: req.userId
+      title: args.input.title,
+      shortDesc: args.input.shortDesc,
+      desc: args.input.desc,
+      category: args.input.category,
+      type: args.input.type,
+      tags: args.input.tags,
+      creator: req.user.userId
     });
     let createdSource;
     try {
       const result = await source.save();
+      console.log("save oke")
       createdSource = transformSource(result);
-      const creator = await User.findById(req.userId);
+      console.log("transform ok", createdSource)
 
-      if (!creator) {
-        throw new Error('User not found.');
-      }
-      creator.createdSources.push(source);
-      await creator.save();
-
-      return createdSource;
+      return {
+        source: createdSource
+      };
     } catch (err) {
       console.log(err);
       throw err;

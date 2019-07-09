@@ -10,31 +10,49 @@ input PaginationArg {
 
 
 type Source {
-  _id: ID!
-  title: String!
-  description: String!
-  category: String!
-  type: Type!
+  _id: ID
+  title: String
+  shortDesc: String
+  desc: String
+  category: String
+  type: Type
   tags: [String!]
-  creator: User!
+  creator: User
   createdAt: DateTime
   updatedAt: DateTime
 }
 
 input SourceInput {
-  title: String!
-  description: String!
-  category: String!
-  type: ID!
+  title: String
+  shortDesc: String
+  desc: String
+  category: String
+  type: String
   tags: [String!]
 }
 
 input SourceInputEdit {
-  title: String!
-  description: String!
-  category: String!
-  type: ID!
+  title: String
+  shortDesc: String
+  desc: String
+  category: String
+  type: String
   tags: [String!]
+}
+
+type SourceError{
+  title: [String]
+  shortDesc: [String]
+  desc: [String]
+  category: [String]
+  type: [String]
+  tags: [String]
+  creator: [String]
+}
+
+type CreateSource{
+  errors: SourceError,
+  source: Source,
 }
 
 type Type {
@@ -90,6 +108,8 @@ type CreateUser{
 
 type RootQuery {
     types(pagination: PaginationArg= {}): [Type!]!
+    tags(pagination: PaginationArg= {}): [Tag!]!
+
     type(_id: ID!): Type!
     events: [Source!]!
     login(email: String!, password: String!): AuthData!
@@ -104,7 +124,7 @@ type RootMutation {
     updateTag(_id: ID!, input: TagInputEdit): Tag
     deleteTag(_id: ID!): Tag
 
-    createSource(input: SourceInput): Source
+    createSource(input: SourceInput): CreateSource
     updateSource(_id: ID!, input: SourceInputEdit): Source
     deleteSource(_id: ID!): Source
 

@@ -269,17 +269,22 @@ const components = {
   ValueContainer,
 };
 
-export default function Autocomplete() {
+export default function Autocomplete(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [single, setSingle] = React.useState(null);
   const [multi, setMulti] = React.useState(null);
+  const options = props.options.map(o => ({
+    value: o._id,
+    label: o.name,
+  }))
 
   function handleChangeSingle(value) {
     setSingle(value);
   }
 
   function handleChangeMulti(value) {
+    props.onChange(value);
     setMulti(value);
   }
 
@@ -306,7 +311,7 @@ export default function Autocomplete() {
         },
         placeholder: 'Select multiple countries',
         }}
-        options={suggestions}
+        options={options}
         components={components}
         value={multi}
         onChange={handleChangeMulti}

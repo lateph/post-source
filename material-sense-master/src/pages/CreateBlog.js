@@ -9,34 +9,27 @@ import withStyles from '@material-ui/styles/withStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Topbar from '../components/Topbar';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+
 import Select from '@material-ui/core/Select';
-import SelectR from 'react-select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { emphasize } from '@material-ui/core/styles';
-import { EditorState } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Editor } from 'react-draft-wysiwyg';
 import { InputLabel } from '@material-ui/core';
-import Chip from '@material-ui/core/Chip';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import Autocomplete from '../components/Autocomplete'
-
+import fetcher from '../api';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const backgroundShape = require('../images/shape.svg');
 
@@ -110,16 +103,36 @@ const styles = theme => ({
 class AuthPage extends Component {
   state = {
     isLogin: true,
-    email: "",
-    password: "",
+    title: "",
+    shortDesc: "",
+    desc: "",
+    type: "",
+    category: "Free",
     isLoading: false,
-    editorState: EditorState.createEmpty()
+    editorState: EditorState.createEmpty(),
+    tags: [],
+    formValidation: {
+      title: "",
+      shortDesc: "",
+      desc: "",
+      category: "",
+      type: "",
+      tags: ""
+    },
+    _types: [],
+    _tags: [],
   };
 
   static contextType = AuthContext;
 
   constructor(props) {
     super(props);
+    this.setTags = this.setTags.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  componentDidMount() {
+    this.fetchDatas();
   }
 
   onEditorStateChange = (editorState) => {
@@ -131,52 +144,51 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    const {email, password} = this.state;
-
-    if (email.trim().length === 0 || password.trim().length === 0) {
-      return;
-    }
+    const {title, shortDesc, desc, category, type, tags} = this.state;
 
     let requestBody = {
       query: `
-        query Login($email: String!, $password: String!) {
-          login(email: $email, password: $password) {
-            userId
-            token
-            tokenExpiration
+      mutation Source($title: String, $shortDesc: String , $desc: String , $category: String , $type: String, $tags: [String!]) {
+          createSource(input: {title: $title, shortDesc: $shortDesc , desc: $desc , category: $category , type: $type, tags: $tags}) {
+            errors {
+              title
+              shortDesc
+              desc
+              category
+              type
+              tags
+            }
+            source{
+              _id
+            }
           }
         }
       `,
       variables: {
-        email: email,
-        password: password
+        title: title,
+        shortDesc: shortDesc,
+        desc: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+        category: category,
+        type: type,
+        tags: tags.map(t => t.label)
       }
     };
 
     this.setState({isLoading: true});
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        this.setState({isLoading: false});
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
-        }
-        return res.json();
-      })
+    fetcher(requestBody)
       .then(resData => {
-        this.setState({isLoading: false});
-        if (resData.data.login.token) {
-          this.context.login(
-            resData.data.login.token,
-            resData.data.login.userId,
-            resData.data.login.tokenExpiration
-          );
+        console.log(resData)
+        let errors = resData.data.createSource.errors
+        console.log('errors', errors)
+        if(errors !== null && errors){
+          this.setState({
+            isLoading: false, 
+            formValidation: errors
+          });
+          console.log(this.state)
+          return
         }
+        this.setState({isLoading: false});
       })
       .catch(err => {
         console.log(err);
@@ -184,47 +196,39 @@ class AuthPage extends Component {
   };
 
   handleChange(event) {
-    this.setState({[event.target.id]: event.target.value});
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  setTags(values){
+    this.setState({tags: values});
   }
 
   fetchDatas() {
     this.setState({ isLoading: true });
     const requestBody = {
       query: `
-          query {
-            events {
-              _id
-              title
-              description
-              date
-              price
-              creator {
-                _id
-                email
-              }
-            }
+        query{
+          types{
+            _id
+            name
           }
+          tags{
+            _id
+            name
+          }
+        }
         `
     };
 
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
-        }
-        return res.json();
-      })
+    fetcher(requestBody)
       .then(resData => {
-        const events = resData.data.events;
-        if (this.isActive) {
-          this.setState({ events: events, isLoading: false });
-        }
+        console.log("type", resData)
+        this.setState({ _types: resData.data.types, _tags: resData.data.tags });
+
+        // const events = resData.data.events;
+        // if (this.isActive) {
+        //   this.setState({ events: events, isLoading: false });
+        // }
       })
       .catch(err => {
         console.log(err);
@@ -256,6 +260,9 @@ class AuthPage extends Component {
                         id="title"
                         name="title"
                         label="Title"
+                        onChange={ this.handleChange } 
+                        error={ !!this.state.formValidation.title }
+                        helperText={ !!this.state.formValidation.title ? this.state.formValidation.title.join(',') : "" }
                         fullWidth
                         autoComplete="fname"
                     />
@@ -267,6 +274,9 @@ class AuthPage extends Component {
                     name="shortDesc"
                     label="Short Desc"
                     fullWidth
+                    onChange={ this.handleChange } 
+                    error={ !!this.state.formValidation.shortDesc }
+                    helperText={ !!this.state.formValidation.shortDesc ? this.state.formValidation.shortDesc.join(',') : "" }
                     autoComplete="lname"
                 />
                 </Grid>
@@ -285,6 +295,7 @@ class AuthPage extends Component {
                         editorClassName="home-editor"
                         onEditorStateChange={this.onEditorStateChange}
                     />
+                    {!!this.state.formValidation.desc && <p>Error</p>}
                 </Grid>
                 <Grid item xs={12}>
                     {/* <TextField
@@ -295,59 +306,58 @@ class AuthPage extends Component {
                     /> */}
                     <FormControl component="fieldset">
                       <FormLabel component="legend">Category</FormLabel>
-                      <RadioGroup aria-label="position" name="position" row>
+                      <RadioGroup aria-label="position" name="category" row onChange={this.handleChange} value={this.state.category}>
                         <FormControlLabel
                           value="Free"
                           control={<Radio color="primary" />}
-                          label="Top"
+                          label="Free"
                           labelPlacement="end"
                         />
                         <FormControlLabel
                           value="Trial"
                           control={<Radio color="primary" />}
-                          label="Start"
+                          label="Trial"
                           labelPlacement="end"
                         />
                         <FormControlLabel
                           value="Buy"
                           control={<Radio color="primary" />}
-                          label="Bottom"
-                          labelPlacement="end"
-                        />
-                        <FormControlLabel
-                          value="end"
-                          control={<Radio color="primary" />}
-                          label="End"
+                          label="Buy"
                           labelPlacement="end"
                         />
                       </RadioGroup>
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                <FormControl fullWidth>
-                        <InputLabel>Type</InputLabel>
-                        <Select
-                            id="category"
-                            name="category"
-                            label="category"
-                            inputProps={{
-                                name: 'age',
-                                id: 'age-simple',
-                            }}
-                            >
-                            <MenuItem value={10}>Source Code</MenuItem>
-                            <MenuItem value={20}>Application</MenuItem>
-                            <MenuItem value={30}>eBook</MenuItem>
-                            <MenuItem value={40}>Other</MenuItem>
-                        </Select>
-                    </FormControl>
+                <FormControl fullWidth error={ !!this.state.formValidation.type }>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        id="type"
+                        name="type"
+                        label="type"
+                        value={this.state.type}
+                        onChange={this.handleChange}
+                        inputProps={{
+                            name: 'type',
+                            id: 'type',
+                        }}
+                        error={ !!this.state.formValidation.type }
+                        >
+                        {this.state._types.map(t => (
+                          <MenuItem key={t._id} value={t._id}>
+                            {t.name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                    { !!this.state.formValidation.type && <FormHelperText>{ this.state.formValidation.type.join(',') }</FormHelperText>}
+                </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <Autocomplete />
+                  <Autocomplete options={this.state._tags} onChange={this.setTags}/>
                 </Grid>
             </Grid>
             <div className={classes.buttons}>
-                <Button className={classes.button} color="primary" variant="contained">
+                <Button className={classes.button} color="primary" variant="contained" onClick={event => this.submitHandler(event)}>
                     Submit
                 </Button>
             </div>
