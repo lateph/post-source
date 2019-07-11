@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
 const sourceSchema = new Schema({
@@ -7,6 +6,7 @@ const sourceSchema = new Schema({
     type: String,
     required: true
   },
+  slug: { type: String, slug: "title" , unique: true},
   shortDesc: {
     type: String,
     required: true
@@ -18,6 +18,9 @@ const sourceSchema = new Schema({
   category: {
     type: String,
     required: true
+  },
+  file: {
+    type: String,
   },
   tags: [{
     type: String,

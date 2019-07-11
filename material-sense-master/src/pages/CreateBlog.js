@@ -11,6 +11,7 @@ import Topbar from '../components/Topbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -30,6 +31,8 @@ import { InputLabel } from '@material-ui/core';
 import Autocomplete from '../components/Autocomplete'
 import fetcher from '../api';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 const backgroundShape = require('../images/shape.svg');
 
@@ -98,6 +101,9 @@ const styles = theme => ({
     bottom: 6,
     fontSize: 16,
   },
+  buttonProgress: {
+    marginRight:  theme.spacing(1)
+  }
 })
 
 class AuthPage extends Component {
@@ -111,6 +117,11 @@ class AuthPage extends Component {
     isLoading: false,
     editorState: EditorState.createEmpty(),
     tags: [],
+    file: null,
+    uploadProgress: {
+      state: "",
+      percentage: 0
+    },
     formValidation: {
       title: "",
       shortDesc: "",
@@ -129,6 +140,7 @@ class AuthPage extends Component {
     super(props);
     this.setTags = this.setTags.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.onFilesAdded = this.onFilesAdded.bind(this)
   }
 
   componentDidMount() {
@@ -144,7 +156,7 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    const {title, shortDesc, desc, category, type, tags} = this.state;
+    const {title, shortDesc, category, type, tags} = this.state;
 
     let requestBody = {
       query: `
@@ -186,17 +198,67 @@ class AuthPage extends Component {
             formValidation: errors
           });
           console.log(this.state)
-          return
+          throw Error(errors)
         }
+        return resData
+      })
+      .then(resData => {
+        console.log("upload id", resData)
+        this.sendRequest(this.state.file, resData.data.createSource.source._id);
         this.setState({isLoading: false});
       })
       .catch(err => {
+        this.setState({isLoading: false});
         console.log(err);
       });
   };
 
   handleChange(event) {
     this.setState({[event.target.name]: event.target.value});
+  }
+
+  sendRequest(file, id) {
+    return new Promise((resolve, reject) => {
+     const req = new XMLHttpRequest();
+   
+     req.upload.addEventListener("progress", event => {
+      if (event.lengthComputable) {
+       const copy = { ...this.state.uploadProgress };
+       copy[file.name] = {
+        state: "pending",
+        percentage: (event.loaded / event.total) * 100
+       };
+       this.setState({ uploadProgress: copy });
+      }
+     });
+      
+     req.upload.addEventListener("load", event => {
+      const copy = { ...this.state.uploadProgress };
+      copy[file.name] = { state: "done", percentage: 100 };
+      this.setState({ uploadProgress: copy });
+      resolve(req.response);
+     });
+      
+     req.upload.addEventListener("error", event => {
+      const copy = { ...this.state.uploadProgress };
+      copy[file.name] = { state: "error", percentage: 0 };
+      this.setState({ uploadProgress: copy });
+      reject(req.response);
+     });
+   
+     const formData = new FormData();
+     formData.append("file", file, file.name);
+     formData.append("id", id);
+    
+     let jwt = localStorage.getItem('token');
+     req.open("POST", process.env.REACT_APP_URL_UPLOAD);
+     req.setRequestHeader('Authorization',  `Bearer ${jwt}`);
+     req.send(formData);
+    });
+  }
+
+  onFilesAdded(file) {
+    this.setState({file: file.target.files[0]});
   }
 
   setTags(values){
@@ -223,7 +285,7 @@ class AuthPage extends Component {
     fetcher(requestBody)
       .then(resData => {
         console.log("type", resData)
-        this.setState({ _types: resData.data.types, _tags: resData.data.tags });
+        this.setState({ _types: resData.data.types, _tags: resData.data.tags, isLoading: false  });
 
         // const events = resData.data.events;
         // if (this.isActive) {
@@ -355,10 +417,25 @@ class AuthPage extends Component {
                 <Grid item xs={12}>
                   <Autocomplete options={this.state._tags} onChange={this.setTags}/>
                 </Grid>
+                <Grid item xs={12}>
+                  <input
+                      accept="image/*"
+                      className={classes.input}
+                      id="icon-button-photo"
+                      onChange={this.onFilesAdded}
+                      type="file"
+                  />
+                  {/* <label htmlFor="icon-button-photo">
+                    <IconButton color="primary" component="span">
+                        <PhotoCamera />
+                    </IconButton>
+                </label> */}
+                </Grid>
             </Grid>
             <div className={classes.buttons}>
-                <Button className={classes.button} color="primary" variant="contained" onClick={event => this.submitHandler(event)}>
-                    Submit
+                <Button className={classes.button} color="primary" variant="contained" onClick={event => this.submitHandler(event)} disabled={this.state.isLoading} >
+                  {this.state.isLoading && <CircularProgress size={24} className={classes.buttonProgress} color="white" />}
+                  Submit
                 </Button>
             </div>
             </Paper>

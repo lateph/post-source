@@ -2,14 +2,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const mongoose = require('mongoose');
+const slug = require('mongoose-slug-generator');
+mongoose.plugin(slug);
+mongoose.set('useFindAndModify', false);
 const jwt = require('express-jwt');
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require('cors')
+const upload = require("./upload");
 const helmet = require('helmet'); 
 const auth = jwt({
     secret: "supergantengbanget",
@@ -19,6 +25,8 @@ const auth = jwt({
 app.use(cors());
 app.use(helmet());
 app.use(auth);
+
+app.post("/upload", upload);
 
 app.use(
   '/graphql',

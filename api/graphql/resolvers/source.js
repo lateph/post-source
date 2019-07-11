@@ -1,4 +1,5 @@
 const Source = require('../../models/source');
+const Tag = require('../../models/tag');
 const User = require('../../models/user');
 const validate = require("validate.js");
 const { isAuthenticated } = require('../../helpers/is-auth')
@@ -73,7 +74,8 @@ module.exports = {
       console.log("save oke")
       createdSource = transformSource(result);
       console.log("transform ok", createdSource)
-
+      let up = await Tag.updateMany({ name: {$in: args.input.tags }}, {$inc:{ total: 1 }});
+      console.log(up, args.input.tags)
       return {
         source: createdSource
       };
