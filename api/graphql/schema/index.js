@@ -6,6 +6,7 @@ scalar DateTime
 input PaginationArg {
   skip: Int = 0
   limit: Int = 0
+  sort: String = ""
 }
 
 
@@ -14,12 +15,20 @@ type Source {
   title: String
   shortDesc: String
   desc: String
+  slug: String
+  file: String
+  thumb: String
   category: String
   type: Type
   tags: [String!]
   creator: User
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input SourceFilter {
+  category: String
+  tags: String
 }
 
 input SourceInput {
@@ -86,31 +95,43 @@ input TagInputEdit {
   name: String
 }
 
+type UserError{
+  firstName: [String]
+  lastName: [String]
+  email: [String]
+  password: [String]
+}
 type User {
   _id: ID
+  firstName: String
+  lastName: String
   email: String
   password: String
 }
 type AuthData {
-  userId: ID!
-  token: String!
-  tokenExpiration: Int!
+  userId: ID
+  token: String
+  tokenExpiration: Int
 }
 input UserInput {
-  email: String!
-  password: String!
+  firstName: String
+  lastName: String
+  email: String
+  password: String
 }
 type CreateUser{
-  errors: User,
+  errors: UserError,
   user: User,
   auth: AuthData
 }
 
 type RootQuery {
     types(pagination: PaginationArg= {}): [Type!]!
+    sources(pagination: PaginationArg= {}, filter: SourceFilter={}): [Source!]!
     tags(pagination: PaginationArg= {}): [Tag!]!
 
     type(_id: ID!): Type!
+    sourceSlug(slug: String!): Source
     events: [Source!]!
     login(email: String!, password: String!): AuthData!
 }

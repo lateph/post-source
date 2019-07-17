@@ -1,25 +1,65 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const validate = require("validate.js");
 
 const User = require('../../models/user');
 
 module.exports = {
   createUser: async args => {
     try {
-      const existingUser = await User.findOne({ email: args.userInput.email });
-      if (existingUser) {
-        console.log("error")
-        return {
-          errors: {
-            'email': "Email Already Exists",
-            'password': ""
-          },
+      validate.validators.checkEmail = function(value) {
+        return new validate.Promise(function(resolve, reject){
+          const query = User.findOne({ email: value });
+          query.exec(function (err, person) {
+            if (err) return resolve("Email Already Exists");
+            // Prints "Space Ghost is a talk show host."
+            if (person) {
+              resolve("Email Already Exists")
+            }
+            else{
+              resolve()
+            }
+          });
+          
+        });
+      };
+
+      const constraints = {
+        firstName: {
+          presence: {allowEmpty: false},
+        },
+        lastName: {
+          presence: {allowEmpty: false},
+        },
+        email: {
+          presence: {allowEmpty: false},
+          email: true,
+          checkEmail: true
+        },
+        password: {
+          presence: {allowEmpty: false},
         }
+      };
+      // return
+      await validate.async({
+        firstName: args.userInput.firstName,
+        lastName: args.userInput.lastName,
+        email: args.userInput.email,
+        password: args.userInput.password,
+      }, constraints);
+    } catch (errors) {
+      console.log(errors);
+      return {
+        errors,
       }
+    }
+    try {
       const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
 
       const userNew = new User({
         email: args.userInput.email,
+        firstName: args.userInput.firstName,
+        lastName: args.userInput.lastName,
         password: hashedPassword
       });
 
@@ -27,8 +67,8 @@ module.exports = {
 
       let user =  { ...result._doc, password: null, _id: result.id };
       const token = jwt.sign(
-        { userId: user.id, email: user.email },
-        'somesupersecretkey',
+        { userId: user._id, email: user.email },
+        'supergantengbanget',
         {
           expiresIn: '1y'
         }

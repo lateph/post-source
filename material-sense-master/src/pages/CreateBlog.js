@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -33,6 +33,7 @@ import fetcher from '../api';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import AttachFile from '@material-ui/icons/AttachFile';
 
 const backgroundShape = require('../images/shape.svg');
 
@@ -103,6 +104,9 @@ const styles = theme => ({
   },
   buttonProgress: {
     marginRight:  theme.spacing(1)
+  },
+  file: {
+    display: 'none'
   }
 })
 
@@ -118,6 +122,7 @@ class AuthPage extends Component {
     editorState: EditorState.createEmpty(),
     tags: [],
     file: null,
+    thumb: null,
     uploadProgress: {
       state: "",
       percentage: 0
@@ -141,6 +146,7 @@ class AuthPage extends Component {
     this.setTags = this.setTags.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.onFilesAdded = this.onFilesAdded.bind(this)
+    this.onThumbsAdded = this.onThumbsAdded.bind(this)
   }
 
   componentDidMount() {
@@ -172,6 +178,7 @@ class AuthPage extends Component {
             }
             source{
               _id
+              slug
             }
           }
         }
@@ -202,9 +209,22 @@ class AuthPage extends Component {
         }
         return resData
       })
-      .then(resData => {
+      .then(  async (resData) =>  {
         console.log("upload id", resData)
-        this.sendRequest(this.state.file, resData.data.createSource.source._id);
+        try {
+          if(this.state.file)
+            await this.sendRequest(this.state.file, resData.data.createSource.source._id, 'file');
+        } catch (error) {
+          
+        }
+        try {
+          if(this.state.thumb)
+            await this.sendRequest(this.state.thumb, resData.data.createSource.source._id, 'thumb');
+        } catch (error) {
+          
+        }
+        this.props.history.push('/post/'+resData.data.createSource.source.slug)
+
         this.setState({isLoading: false});
       })
       .catch(err => {
@@ -217,7 +237,7 @@ class AuthPage extends Component {
     this.setState({[event.target.name]: event.target.value});
   }
 
-  sendRequest(file, id) {
+  sendRequest(file, id, field) {
     return new Promise((resolve, reject) => {
      const req = new XMLHttpRequest();
    
@@ -249,6 +269,7 @@ class AuthPage extends Component {
      const formData = new FormData();
      formData.append("file", file, file.name);
      formData.append("id", id);
+     formData.append("field", field);
     
      let jwt = localStorage.getItem('token');
      req.open("POST", process.env.REACT_APP_URL_UPLOAD);
@@ -258,7 +279,13 @@ class AuthPage extends Component {
   }
 
   onFilesAdded(file) {
+    console.log(file.target.files[0])
     this.setState({file: file.target.files[0]});
+  }
+
+  onThumbsAdded(file) {
+    console.log(file.target.files[0])
+    this.setState({thumb: file.target.files[0]});
   }
 
   setTags(values){
@@ -304,6 +331,8 @@ class AuthPage extends Component {
     const currentPath = this.props.location.pathname
     const { classes } = this.props;
     const { editorState } = this.state;
+
+    console.log(this.state.file)
     
     return (
       <React.Fragment>
@@ -317,17 +346,17 @@ class AuthPage extends Component {
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <TextField
-                        required
-                        id="title"
-                        name="title"
-                        label="Title"
-                        onChange={ this.handleChange } 
-                        error={ !!this.state.formValidation.title }
-                        helperText={ !!this.state.formValidation.title ? this.state.formValidation.title.join(',') : "" }
-                        fullWidth
-                        autoComplete="fname"
-                    />
+                  <TextField
+                      required
+                      id="title"
+                      name="title"
+                      label="Title"
+                      onChange={ this.handleChange } 
+                      error={ !!this.state.formValidation.title }
+                      helperText={ !!this.state.formValidation.title ? this.state.formValidation.title.join(',') : "" }
+                      fullWidth
+                      autoComplete="fname"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                 <TextField
@@ -382,9 +411,9 @@ class AuthPage extends Component {
                           labelPlacement="end"
                         />
                         <FormControlLabel
-                          value="Buy"
+                          value="Paid"
                           control={<Radio color="primary" />}
-                          label="Buy"
+                          label="Paid"
                           labelPlacement="end"
                         />
                       </RadioGroup>
@@ -418,18 +447,59 @@ class AuthPage extends Component {
                   <Autocomplete options={this.state._tags} onChange={this.setTags}/>
                 </Grid>
                 <Grid item xs={12}>
-                  <input
-                      accept="image/*"
-                      className={classes.input}
-                      id="icon-button-photo"
-                      onChange={this.onFilesAdded}
-                      type="file"
+                  <TextField
+                    required
+                    id="file"
+                    name="file"
+                    label="Source Code File"
+                    value={this.state.file ? this.state.file.name : ''}
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <input
+                            className={classes.file}
+                            id="icon-button-file"
+                            onChange={this.onFilesAdded}
+                            type="file"
+                          />
+                          <label htmlFor="icon-button-file">
+                              <IconButton color="primary" component="span">
+                                  <AttachFile />
+                              </IconButton>
+                          </label>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-                  {/* <label htmlFor="icon-button-photo">
-                    <IconButton color="primary" component="span">
-                        <PhotoCamera />
-                    </IconButton>
-                </label> */}
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    id="thumb"
+                    name="thumb"
+                    label="Thumb Image"
+                    value={this.state.thumb ? this.state.thumb.name : ''}
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <input
+                            accept="image/*"
+                            className={classes.file}
+                            id="icon-button-photo"
+                            onChange={this.onThumbsAdded}
+                            type="file"
+                          />
+                          <label htmlFor="icon-button-photo">
+                              <IconButton color="primary" component="span">
+                                  <PhotoCamera />
+                              </IconButton>
+                          </label>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
                 </Grid>
             </Grid>
             <div className={classes.buttons}>

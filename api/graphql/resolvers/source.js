@@ -1,5 +1,6 @@
 const Source = require('../../models/source');
 const Tag = require('../../models/tag');
+const Type = require('../../models/type');
 const User = require('../../models/user');
 const validate = require("validate.js");
 const { isAuthenticated } = require('../../helpers/is-auth')
@@ -7,9 +8,10 @@ const { isAuthenticated } = require('../../helpers/is-auth')
 const { transformSource } = require('./merge');
 
 module.exports = {
-  sources: async () => {
+  sources: async (args) => {
+    console.log(args)
     try {
-      const sources = await Source.find();
+      const sources = await Source.find(args.filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
       return sources.map(source => {
         return transformSource(source);
       });
@@ -17,7 +19,17 @@ module.exports = {
       throw err;
     }
   },
+  sourceSlug: async (args, req) => {
+    try {
+      const source = await Source.findOne({slug:args.slug});
+      
+      return transformSource(source);
+    } catch (err) {
+      throw err;
+    }
+  },
   createSource: async (args, req) => {
+    console.log(req)
     if (isAuthenticated(req)) {
       throw new Error('Unauthenticated!');
     }
@@ -74,8 +86,8 @@ module.exports = {
       console.log("save oke")
       createdSource = transformSource(result);
       console.log("transform ok", createdSource)
-      let up = await Tag.updateMany({ name: {$in: args.input.tags }}, {$inc:{ total: 1 }});
-      console.log(up, args.input.tags)
+      await Tag.updateMany({ name: {$in: args.input.tags }}, {$inc:{ total: 1 }});
+      await Type.updateOne({_id: args.input.type}, {$inc:{ total: 1 }});
       return {
         source: createdSource
       };

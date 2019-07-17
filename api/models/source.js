@@ -22,6 +22,9 @@ const sourceSchema = new Schema({
   file: {
     type: String,
   },
+  thumb: {
+    type: String,
+  },
   tags: [{
     type: String,
   }],

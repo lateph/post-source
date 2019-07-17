@@ -12,6 +12,9 @@ import SimpleLineChart from './SimpleLineChart';
 import Months from './common/Months';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import Loading from './common/Loading';
+import fetcher from '../api';
+import Category from '../components/Category'
+
 
 import Topbar from './Topbar';
 
@@ -115,53 +118,53 @@ const monthRange = Months;
 class Dashboard extends Component {
 
   state = {
-    loading: true,
-    amount: 15000,
-    period: 3,
-    start: 0,
-    monthlyInterest: 0,
-    totalInterest: 0,
-    monthlyPayment: 0,
-    totalPayment: 0,
-    data: []
+    types: [],
+    tags: [],
+    blog: {},
   };
 
-  updateValues() {
-    const { amount, period, start } = this.state;
-    const monthlyInterest = (amount)*(Math.pow(0.01*(1.01), period))/(Math.pow(0.01, period - 1))
-    const totalInterest = monthlyInterest * (period + start);
-    const totalPayment = amount + totalInterest;
-    const monthlyPayment = period > start ? totalPayment/(period - start) : totalPayment/(period)
-
-    const data = Array.from({length: period + start}, (value, i) => {
-      const delayed = i < start;
-      return {
-        name: monthRange[i],
-        'Type': delayed ? 0 : Math.ceil(monthlyPayment).toFixed(0),
-        'OtherType': Math.ceil(monthlyInterest).toFixed(0)
-      }
-    })
-
-    this.setState({monthlyInterest, totalInterest, totalPayment, monthlyPayment, data})
-  }
-
   componentDidMount() {
-    this.updateValues();
+    this.fetchDatas();
   }
 
-  handleChangeAmount = (event, value) => {
-    this.setState({amount: value, loading: false});
-    this.updateValues();
-  }
+  fetchDatas() {
+    this.setState({ isLoading: true });
+    const requestBody = {
+      query: `
+        query{
+          types{
+            _id
+            name
+            total
+          }
+          tags{
+            _id
+            name
+            total
+          }
+        }
+        `,
+        variables: {
+          // slug: this.props.match.params.slug,
+        }
+    };
 
-  handleChangePeriod = (event, value) => {
-    this.setState({period: value, loading: false});
-    this.updateValues();
-  }
+    fetcher(requestBody)
+      .then(resData => {
+        console.log("type", resData)
+        this.setState({ types: resData.data.types, tags: resData.data.tags, isLoading: false, source: resData.data.sourceSlug  });
 
-  handleChangeStart = (event, value) => {
-    this.setState({start: value, loading: false});
-    this.updateValues();
+        // const events = resData.data.events;
+        // if (this.isActive) {
+        //   this.setState({ events: events, isLoading: false });
+        // }
+      })
+      .catch(err => {
+        console.log(err);
+        if (this.isActive) {
+          this.setState({ isLoading: false });
+        }
+      });
   }
 
   render() {
@@ -192,45 +195,12 @@ class Dashboard extends Component {
                   </div>
                 </div>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      How much you want to transfer
-                    </Typography>
-                    <Typography variant="body1">
-                      Use slider to set the amount you need.
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color='secondary' variant="h6" gutterBottom>
-                        {numeral(amount).format()} USD
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={amount}
-                        min={20000}
-                        max={150000}
-                        step={15000}
-                        onChange={this.handleChangeAmount}
-                      />
-                    </div>
-                    <div className={classes.rangeLabel}>
-                      <div>
-                        <Typography variant="subtitle2">
-                          15,000 USD
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="subtitle2">
-                          150,000 USD
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
+              <Grid item xs={12} md={2}>
+                <Paper>
+                  <Category types={this.state.types}/>
                 </Paper>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={10}>
                 <Paper className={classes.paper}>
                   <div>
                     <Typography variant="subtitle1" gutterBottom>
@@ -262,44 +232,6 @@ class Dashboard extends Component {
                       <div>
                         <Typography variant="subtitle2">
                           6 months
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Start date
-                    </Typography>
-                    <Typography variant="body1">
-                      Set your preferred start date.
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color='secondary' variant="h6" gutterBottom>
-                        {monthRange[start]}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={start}
-                        min={0}
-                        max={5}
-                        step={1}
-                        onChange={this.handleChangeStart}
-                      />
-                    </div>
-                    <div className={classes.rangeLabel}>
-                      <div>
-                        <Typography variant="subtitle2">
-                          Dec 2018
-                        </Typography>
-                      </div>
-                      <div>
-                        <Typography variant="subtitle2">
-                          May 2019
                         </Typography>
                       </div>
                     </div>

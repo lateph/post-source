@@ -304,7 +304,7 @@ export default function Autocomplete(props) {
         styles={selectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{
-        label: 'Countries',
+        label: 'Tags',
         InputLabelProps: {
             htmlFor: 'react-select-multiple',
             shrink: true,

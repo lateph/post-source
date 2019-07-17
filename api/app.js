@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const slug = require('mongoose-slug-generator');
 mongoose.plugin(slug);
 mongoose.set('useFindAndModify', false);
+mongoose.set('debug', true);
+
 const jwt = require('express-jwt');
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
@@ -27,6 +29,9 @@ app.use(helmet());
 app.use(auth);
 
 app.post("/upload", upload);
+app.get("/thumb/:id", (req, res) => {
+  res.sendFile(__dirname+`/uploads/source/thumb/${req.params.id}`);
+});
 
 app.use(
   '/graphql',
@@ -40,7 +45,7 @@ app.use(
 
 mongoose
   .connect(
-    `mongodb://localhost:27017/hendra`
+    `mongodb://127.0.0.1:27017/hendra`
   )
   .then(() => {
     app.listen(8000, '0.0.0.0');    

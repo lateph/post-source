@@ -51,7 +51,6 @@ class EventsPage extends Component {
     }
 
     const event = { title, price, date, description };
-    console.log(event);
 
     const requestBody = {
       query: `
@@ -173,7 +172,6 @@ class EventsPage extends Component {
       this.setState({ selectedEvent: null });
       return;
     }
-    console.log(this.state.selectedEvent)
     const requestBody = {
       query: `
           mutation BookEvent($id: ID!) {
@@ -204,7 +202,6 @@ class EventsPage extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log(resData);
         this.setState({ selectedEvent: null });
       })
       .catch(err => {

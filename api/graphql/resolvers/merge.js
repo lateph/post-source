@@ -2,6 +2,7 @@ const DataLoader = require('dataloader');
 
 const Source = require('../../models/source');
 const User = require('../../models/user');
+const Type = require('../../models/type');
 
 const userLoader = new DataLoader(userIds => {
   return User.find({ _id: { $in: userIds } });
@@ -9,7 +10,7 @@ const userLoader = new DataLoader(userIds => {
 
 const typeLoader = new DataLoader(typeIds => {
   console.log("typeLoader",typeIds)
-  return Bank.find({ _id: { $in: typeIds } });
+  return Type.find({ _id: { $in: typeIds } });
 });
 
 const user = async userId => {
@@ -41,11 +42,10 @@ const transformUser = user => {
 };
 
 const transformSource = source => {
-  console.log("source")
   return {
       ...source._doc,
       _id: source.id,
-      user: user.bind(this, source._doc.user),
+      creator: user.bind(this, source._doc.creator),
       type: type.bind(this, source._doc.type),
   };
 };

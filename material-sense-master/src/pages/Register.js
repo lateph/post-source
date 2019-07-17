@@ -55,10 +55,14 @@ class AuthPage extends Component {
   state = {
     isLogin: true,
     email: "",
+    firstName: "",
+    lastName: "",
     password: "",
     isLoading: false,
     formValidation: {
       email: "",
+      lastName: "",
+      firstName: "",
       password: ""
     }
   };
@@ -72,18 +76,17 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    const {email, password} = this.state;
-
-    if (email.trim().length === 0 || password.trim().length === 0) {
-      return;
-    }
+    const {email, password, firstName, lastName} = this.state;
 
     var requestBody = {
       query: `
-        mutation CreateUser($email: String!, $password: String!) {
-          createUser(userInput: {email: $email, password: $password}) {
+        mutation CreateUser($email: String, $password: String, $firstName: String, $lastName: String) {
+          createUser(userInput: {email: $email, password: $password, firstName: $firstName, lastName: $lastName}) {
             errors {
               email
+              password
+              firstName
+              lastName
             }
             auth {
               userId
@@ -94,6 +97,8 @@ class AuthPage extends Component {
         }
       `,
       variables: {
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password
       }
@@ -115,7 +120,6 @@ class AuthPage extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log(resData)
         let errors = resData.data.createUser.errors
         console.log('errors', errors)
         if(errors !== null && errors){
@@ -123,7 +127,6 @@ class AuthPage extends Component {
             isLoading: false, 
             formValidation: errors
           });
-          console.log(this.state)
           return
         }
         this.setState({isLoading: false});
@@ -175,6 +178,9 @@ class AuthPage extends Component {
                       id="firstName"
                       label="First Name"
                       autoFocus
+                      error={ !!this.state.formValidation.firstName }
+                      helperText={ !!this.state.formValidation.firstName ? this.state.formValidation.firstName.join(',') : "" }
+                      onChange={ this.handleChange.bind(this) } 
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -186,6 +192,9 @@ class AuthPage extends Component {
                       label="Last Name"
                       name="lastName"
                       autoComplete="lname"
+                      error={ !!this.state.formValidation.lastName }
+                      helperText={ !!this.state.formValidation.lastName ? this.state.formValidation.lastName.join(',') : "" }
+                      onChange={ this.handleChange.bind(this) } 
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -197,8 +206,8 @@ class AuthPage extends Component {
                       label="Email Address"
                       name="email"
                       autoComplete="email"
-                      error={ this.state.formValidation.email != "" }
-                      helperText={ this.state.formValidation.email }
+                      error={ !!this.state.formValidation.email }
+                      helperText={ !!this.state.formValidation.email ? this.state.formValidation.email.join(',') : "" }
                       onChange={ this.handleChange.bind(this) } 
                     />
                   </Grid>
@@ -212,6 +221,8 @@ class AuthPage extends Component {
                       type="password"
                       id="password"
                       autoComplete="current-password"
+                      error={ !!this.state.formValidation.password }
+                      helperText={ !!this.state.formValidation.password ? this.state.formValidation.password.join(',') : "" }
                       onChange={ this.handleChange.bind(this) }
                   />
                   </Grid>

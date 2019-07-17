@@ -22,9 +22,7 @@ function updateOptions(body, options) {
 
 export default function fetcher(body, options = {}) {
   let option = updateOptions(body, options)
-  console.log(option)
   return fetch(process.env.REACT_APP_URL, option).then(res => {
-    console.log(res)
     if (res.status !== 200 && res.status !== 201) {
       throw new Error('Failed!');
     }

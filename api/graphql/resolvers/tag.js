@@ -6,7 +6,7 @@ module.exports = {
         return Tag.findById(_id)
     },
     tags: (args, req) => {
-        return Tag.find().skip(args.pagination.skip).limit(args.pagination.limit).exec()
+        return Tag.find().skip(args.pagination.skip).limit(args.pagination.limit).sort(args.pagination.sort).exec()
     },
     updateTag: async ({_id, input}, req) => {
         isAdmin(req)

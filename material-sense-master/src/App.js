@@ -5,10 +5,11 @@ import './App.css';
 import Routes from './routes'
 import { blue, indigo } from '@material-ui/core/colors'
 import AuthContext from './context/auth-context';
-import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-import Dashboard from './components/Dashboard'
+import HomePage from './pages/Home'
+import Search from './pages/Search'
+import Blog from './pages/Blog'
 import Wizard from './components/Wizard'
 import Cards from './components/Cards'
 import Signup from './pages/Register'
@@ -56,7 +57,6 @@ class App extends Component {
   };
 
   toggleMenu = () => {
-    console.log("test")
     this.setState({isOpen: !this.state.isOpen});
   };
 
@@ -77,9 +77,11 @@ class App extends Component {
               <Switch>
                 {this.state.token && <Redirect from="/login" to="/" />}
                 {this.state.token && <Redirect from="/signup" to="/" />}
-                <Route exact path="/" component={Dashboard} />
+                <Route exact path="/" component={HomePage} />
                 <Route path="/login" component={LoginPage} />
                 <Route path="/new" component={CreateBlog} />
+                <Route path="/post/:slug" component={Blog} />
+                <Route path="/search" component={Search} />
                 <Route exact path='/signup' component={ Signup } />
                 <Route exact path='/wizard' component={ Wizard } />
                 <Route exact path='/cards' component={ Cards } />
