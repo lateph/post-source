@@ -27,6 +27,7 @@ type Source {
 }
 
 input SourceFilter {
+  type: String
   category: String
   tags: String
 }
@@ -128,6 +129,7 @@ type CreateUser{
 type RootQuery {
     types(pagination: PaginationArg= {}): [Type!]!
     sources(pagination: PaginationArg= {}, filter: SourceFilter={}): [Source!]!
+    countSources(filter: SourceFilter={}): Int
     tags(pagination: PaginationArg= {}): [Tag!]!
 
     type(_id: ID!): Type!

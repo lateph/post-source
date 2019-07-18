@@ -9,12 +9,18 @@ const { transformSource } = require('./merge');
 
 module.exports = {
   sources: async (args) => {
-    console.log(args)
     try {
       const sources = await Source.find(args.filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
       return sources.map(source => {
         return transformSource(source);
       });
+    } catch (err) {
+      throw err;
+    }
+  },
+  countSources: async (args) => {
+    try {
+      return Source.count(args.filter)
     } catch (err) {
       throw err;
     }
