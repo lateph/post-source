@@ -109,6 +109,11 @@ type User {
   email: String
   password: String
 }
+
+input UserFilter {
+  firstName: String
+}
+
 type AuthData {
   userId: ID
   token: String
@@ -130,6 +135,11 @@ type RootQuery {
     types(pagination: PaginationArg= {}): [Type!]!
     sources(pagination: PaginationArg= {}, filter: SourceFilter={}): [Source!]!
     countSources(filter: SourceFilter={}): Int
+
+    user(_id: ID!): User
+    users(pagination: PaginationArg= {}, filter: UserFilter={}): [User!]!
+    countUsers(filter: UserFilter={}): Int
+    
     tags(pagination: PaginationArg= {}): [Tag!]!
 
     type(_id: ID!): Type!
@@ -152,6 +162,7 @@ type RootMutation {
     deleteSource(_id: ID!): Source
 
     createUser(userInput: UserInput): CreateUser
+    updateUser(userInput: UserInput): CreateUser
 }
 
 schema {

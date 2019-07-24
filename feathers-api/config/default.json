@@ -1,0 +1,35 @@
+{
+  "host": "localhost",
+  "port": 3030,
+  "limitJson": "100mb",
+  "public": "../public/",
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "mongodb": "mongodb://128.199.155.103:27017/hendra",
+  "authentication": {
+    "secret": "79bed9d6c1541035ec1e258e24f9bd333bf0b8ec7ac4559b262c7be17c88ce3118a999311c0c3e6c69541c69baabbd8918d064043220ded7220702ef6884c0060a0896e540efe0cad933bf7c9a719676689201c1ddc89d0f4175a579a0e4dde5154c29a6c00e829d67d61d39f5c6d6cdbfad4658e14374cb18b35e3c207e39f9062fd5ac25c4d9c158891337c0c0e924fcaaf611e268065160be76bcf9f919a2919a2033f45503d9ac19dee6c23766f31605c2ea89891270ad2831fab8d7b3f369102c55d5cda32603eec2e28eedf51901cc300b6fed5bfe7578be21f7499337a3ac39775425939c946c06a494d25f17b8e108765dc7441d1720ce14513c9d58",
+    "strategies": [
+      "jwt",
+      "local"
+    ],
+    "path": "/authentication",
+    "service": "users",
+    "jwt": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "https://yourdomain.com",
+      "subject": "anonymous",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "local": {
+      "entity": "user",
+      "usernameField": "email",
+      "passwordField": "password"
+    }
+  }
+}

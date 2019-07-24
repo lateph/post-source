@@ -51,6 +51,7 @@ const transformSource = source => {
 };
 
 exports.transformSource = transformSource;
+exports.transformUser = transformUser;
 
 // exports.user = user;
 // exports.events = events;

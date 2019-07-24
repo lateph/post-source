@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const validate = require("validate.js");
 
 const User = require('../../models/user');
+const { transformUser } = require('./merge');
 
 module.exports = {
   createUser: async args => {
@@ -102,5 +103,73 @@ module.exports = {
       }
     );
     return { userId: user.id, token: token, tokenExpiration: 1 };
-  }
+  },
+  users: async (args) => {
+    try {
+      const users = await User.find(args.filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
+      return users.map(user => {
+        return transformUser(user);
+      });
+    } catch (err) {
+      throw err;
+    }
+  },
+  countUsers: async (args) => {
+    try {
+      return User.count(args.filter)
+    } catch (err) {
+      throw err;
+    }
+  },
+  user: async (args, req) => {
+    try {
+      const user = await User.findOne({_id:args._id});
+      
+      return transformUser(user);
+    } catch (err) {
+      throw err;
+    }
+  },
+  updateUser: async args => {
+    try {
+      const constraints = {
+        firstName: {
+          presence: {allowEmpty: false},
+        },
+        lastName: {
+          presence: {allowEmpty: false},
+        },
+        // password: {
+        //   presence: {allowEmpty: false},
+        // }
+      };
+      // return
+      await validate.async({
+        firstName: args.userInput.firstName,
+        lastName: args.userInput.lastName,
+        // email: args.userInput.email,
+        // password: args.userInput.password,
+      }, constraints);
+    } catch (errors) {
+      console.log(errors);
+      return {
+        errors,
+      }
+    }
+    try {
+
+      const user = await User.findByIdAndUpdate(_id, {
+        firstName: args.userInput.firstName,
+        lastName: args.userInput.lastName,
+      });
+      if (!user) {
+          throw new Error('Bank not found')
+      }
+      return {
+        user: await User.findById(_id),
+      }
+    } catch (err) {
+      throw err;
+    }
+  },
 };

@@ -45,7 +45,7 @@ app.use(
 
 mongoose
   .connect(
-    `mongodb://127.0.0.1:27017/hendra`
+    `mongodb://128.199.155.103:27017/hendra`
   )
   .then(() => {
     app.listen(8000, '0.0.0.0');    
