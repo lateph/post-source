@@ -10,6 +10,9 @@ module.exports = function (app) {
         type: String,
         required: true
     },
+    desc: {
+      type: String,
+    },
     total: {
         type: Number,
         default: 0

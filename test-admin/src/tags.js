@@ -25,7 +25,7 @@ const PostTitle = ({ record }) => {
 };
     
 export const TagsEdit = props => (
-    <Edit title={<PostTitle />} {...props}>
+    <Edit title={<PostTitle />} {...props} undoable={false}>
         <SimpleForm>
             <TextInput source="name" />
             <LongTextInput source="desc" />

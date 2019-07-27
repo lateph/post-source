@@ -26,10 +26,10 @@ const App = () => (
     authProvider={authClient(feathersClient, authClientOptions)}
   >
         {permissions => [
-            <Resource name='tags' list={TagsList} create={TagsCreate} edit={TagsEdit} />,
-            <Resource name='types' list={TypesList} create={TypesCreate} edit={TypesEdit}/>,
-            <Resource name='users' list={UserList} create={UserCreate} edit={UserEdit}/>,
-            <Resource name='sources' list={SourcesList} create={SourcesCreate} edit={SourcesEdit}/>
+            <Resource name='tags' list={TagsList} create={TagsCreate} edit={TagsEdit} undoable={false}  />,
+            <Resource name='types' list={TypesList} create={TypesCreate} edit={TypesEdit} undoable={false} />,
+            <Resource name='users' list={UserList} create={UserCreate} edit={UserEdit} undoable={false} />,
+            <Resource name='sources' list={SourcesList} create={SourcesCreate} edit={SourcesEdit} undoable={false} />
         ]}
   </Admin>
 );

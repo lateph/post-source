@@ -12,7 +12,7 @@ module.exports = function (app) {
     },
     desc: {
       type: String,
-      required: true
+      required: false
     },
     total: {
         type: Number,

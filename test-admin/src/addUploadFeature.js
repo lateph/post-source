@@ -34,12 +34,12 @@ const mapValuesAsync = (obj, asyncFn) => {
  * the `picture` sent property, with `src` and `title` attributes.
  */
 const addUploadFeature = requestHandler => async (type, resource, params) => {
-    if (type === 'CREATE' && resource === 'sources') {
+    if ((type === 'CREATE' || type === 'UPDATE') && resource === 'sources') {
         console.log(params.data)
         // notice that following condition can be true only when `<ImageInput source="thumb" />` component has parameter `multiple={true}`
         // if parameter `multiple` is false, then data.thumb is not an array, but single object
 
-        const files = _.pickBy(params.data, p => p.rawFile instanceof File)
+        const files = _.pickBy(params.data, p => p!=null && p.rawFile instanceof File)
         const filesMaped = await mapValuesAsync(files, async (file) => {
             console.log(file)
             return {

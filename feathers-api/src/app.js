@@ -38,6 +38,9 @@ app.use('/', express.static(app.get('public')));
 app.get("/thumb/:id", (req, res) => {
     res.sendFile(path.resolve(__dirname+`/../uploads/source/thumb/${req.params.id}`));
 });
+app.get("/file/:id", (req, res) => {
+    res.sendFile(path.resolve(__dirname+`/../uploads/source/file/${req.params.id}`));
+});
 // Set up Plugins and providers
 app.configure(express.rest());
 

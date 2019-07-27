@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Datagrid, 
-    TextField, EmailField, Edit, SimpleForm, DisabledInput, TextInput, Create, 
-    LongTextInput, RadioButtonGroupInput, ImageInput, ImageField, ReferenceArrayInput,SelectArrayInput,ChipField } from 'react-admin';
+    TextField, EmailField, Edit, SimpleForm, DisabledInput, TextInput, Create, FormDataConsumer, Labeled, FileInput, FileField,
+    LongTextInput, RadioButtonGroupInput, ImageInput, ImageField, ReferenceArrayInput,SelectArrayInput,ChipField, ReferenceArrayField, SingleFieldList } from 'react-admin';
 import RichTextInput from 'ra-input-rich-text';
 import MyImgField from './MyImgField'
 
@@ -10,19 +10,39 @@ export const SourcesList = props => (
         <Datagrid rowClick="edit">
             <TextField source="title" />
             <TextField source="shortDesc" />
-            <MyImgField source="thumb" title="title" />
+            <TextField source="category" />
+            <ReferenceArrayField label="Tags" reference="tags" source="tags">
+                <SingleFieldList>
+                    <ChipField source="name" />
+                </SingleFieldList>
+            </ReferenceArrayField>
+            <ImageField source="thumb" />
         </Datagrid>
     </List>
 );
 
 export const SourcesEdit = props => (
-    <Edit {...props}>
+    <Edit {...props} undoable={false}>
         <SimpleForm>
-            <DisabledInput source="id" />
-            <TextInput source="firstName" />
-            <TextInput source="lastName" />
-            <TextInput source="email" />
-            <TextInput source="password" type="password" />
+            <TextInput source="title" />
+            <LongTextInput source="shortDesc" />
+            <RichTextInput source="desc" />
+            <RadioButtonGroupInput source="category" choices={[
+                { id: 'Free', name: 'Free' },
+                { id: 'Trial', name: 'Trial' },
+                { id: 'Paid', name: 'Paid' },
+            ]} />
+            <ReferenceArrayInput reference="tags" source="tags" label="Tags">
+                <SelectArrayInput>
+                    <ChipField source="name" />
+                </SelectArrayInput>
+            </ReferenceArrayInput>
+            <ImageInput source="thumb" label="Thumbnail" accept="image/*">
+                <ImageField source="src" title="title" />
+            </ImageInput>
+            <FileInput source="file" label="File" placeholder={<p>Drop your file here</p>}>
+                <FileField source="src" title="title" />
+            </FileInput>
         </SimpleForm>
     </Edit>
 );
@@ -47,7 +67,9 @@ export const SourcesCreate = props => (
             <ImageInput source="thumb" label="Thumbnail" accept="image/*">
                 <ImageField source="src" title="title" />
             </ImageInput>
-            <TextInput source="password" type="password" />
+            <FileInput source="file" label="File" placeholder={<p>Drop your file here</p>}>
+                <FileField source="src" title="title" />
+            </FileInput>
         </SimpleForm>
     </Create>
 );
