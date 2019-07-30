@@ -8867,6 +8867,29 @@ ra-core@^2.9.4:
     redux-saga "~0.16.0"
     reselect "~3.0.0"
 
+ra-core@^2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/ra-core/-/ra-core-2.9.5.tgz#63861650a3e564b2dd0d1540ffed17b0751cf798"
+  integrity sha512-YncSBw1RBqvFQbWAmnw1zBAZfrRA9nc4kyTGENAPQcy2uctbyGtihZMndIDYsmLvM8OwNmY8Ld4ZDcu12XPAHA==
+  dependencies:
+    classnames "~2.2.5"
+    date-fns "^1.29.0"
+    inflection "~1.12.0"
+    lodash "~4.17.5"
+    node-polyglot "^2.2.2"
+    prop-types "~15.6.1"
+    query-string "~5.1.1"
+    ra-language-english "^2.9.3"
+    react-redux "~5.0.7"
+    react-router "^4.2.0"
+    react-router-dom "^4.2.0"
+    react-router-redux "~5.0.0-alpha.9"
+    recompose "~0.26.0"
+    redux "~3.7.2"
+    redux-form "~7.4.0"
+    redux-saga "~0.16.0"
+    reselect "~3.0.0"
+
 ra-data-feathers@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/ra-data-feathers/-/ra-data-feathers-2.1.0.tgz#200d1f22af412f761039d6984b7b6ff4d037a554"
@@ -8884,6 +8907,14 @@ ra-data-json-server@^2.9.4:
   dependencies:
     query-string "~5.1.1"
     ra-core "^2.9.4"
+
+ra-data-simple-rest@^2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/ra-data-simple-rest/-/ra-data-simple-rest-2.9.5.tgz#8c4e2c0db59c4d4a440343177421edbf22224e6d"
+  integrity sha512-3rtjWwNuGuHYUr/FOyQlvjtCL1Pdkuu6+J3nyKaCR0t5N5n+qLcVX6c+tkld9KuhjKfjb/ua00MYk1OyaH6FBg==
+  dependencies:
+    query-string "~5.1.1"
+    ra-core "^2.9.5"
 
 ra-input-rich-text@^2.9.3:
   version "2.9.3"

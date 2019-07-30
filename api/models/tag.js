@@ -4,8 +4,12 @@ const Schema = mongoose.Schema;
 const s = new Schema(
     {
       name: {
-          type: String,
-          required: true
+        type: String,
+        required: true
+      },
+      desc: {
+        type: String,
+        required: false
       },
       total: {
           type: Number,
@@ -15,4 +19,4 @@ const s = new Schema(
     { timestamps: true}
 );
 
-module.exports = mongoose.model('Tag', s);
+module.exports = mongoose.model('tags', s);

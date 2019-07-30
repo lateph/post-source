@@ -7,7 +7,7 @@
     "default": 10,
     "max": 50
   },
-  "mongodb": "mongodb://localhost:27017/hendra",
+  "mongodb": "mongodb://127.0.0.1:27017/hendra",
   "img_url": "http://localhost:3030/thumb/",
   "file_url": "http://localhost:3030/file/",
   "authentication": {

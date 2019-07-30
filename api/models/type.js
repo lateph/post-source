@@ -19,4 +19,4 @@ const s = new Schema(
     { timestamps: true}
 );
 
-module.exports = mongoose.model('Type', s);
+module.exports = mongoose.model('types', s);

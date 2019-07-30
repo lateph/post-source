@@ -34,9 +34,9 @@ const sourceSchema = new Schema({
   },
   creator: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'Users'
   },
 }, 
 { timestamps: true});
 
-module.exports = mongoose.model('Source', sourceSchema);
+module.exports = mongoose.model('sources', sourceSchema);
