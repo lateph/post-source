@@ -2,13 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const mongoose = require('mongoose');
-const slug = require('mongoose-slug-generator');
 const methodOverride = require('method-override')
 const authResolver = require('./graphql/resolvers/auth')
 const fs = require('fs');
 require('dotenv').config()
 // console.log(process.env)
-mongoose.plugin(slug);
 mongoose.set('useFindAndModify', false);
 mongoose.set('debug', true);
 
@@ -78,19 +76,50 @@ restify.serve(router, Sources, {totalCountHeader:true, runValidators: true, preC
   prepareFile(body, "file")
   next()
 },preUpdate: (req, res, next) => {
-  const { body } = req
+  const { body, params } = req
+  // console.log('jancok',req)
+
   prepareFile(body, "thumb")
   prepareFile(body, "file")
-  next()
+  Sources.findById(params.id).then((old) => {
+    // console.log("old value", old)
+    req._old = {
+      ...old._doc
+    }
+    next()
+  })
 }, postCreate: (req, res, next) => {
   const { body } = req
+  Tags.updateMany({ _id: {$in: req.erm.result.tags }}, {$inc:{ total: 1 }}).exec();
+  Types.updateOne({_id: req.erm.result.type}, {$inc:{ total: 1 }}).exec();
+  console.log("telek")
   saveFile(body, "thumb", req.erm.result._id)
   saveFile(body, "file", req.erm.result._id)
   next()
-},postUpdate: (req, res, next) => {
-  const { body } = req
+},postUpdate: async (req, res, next) => {
+  const { body,_old } = req
+  console.log(_old)
+  await Tags.updateMany({ _id: {$in: _old.tags }}, {$inc:{ total: -1 }}).exec();
+  await Types.updateOne({_id: _old.type}, {$inc:{ total: -1 }}).exec();
+  await Tags.updateMany({ _id: {$in: req.erm.result.tags }}, {$inc:{ total: 1 }}).exec();
+  await Types.updateOne({_id: req.erm.result.type}, {$inc:{ total: 1 }}).exec();
   saveFile(body, "thumb", req.erm.result._id)
   saveFile(body, "file", req.erm.result._id)
+  next()
+},preDelete: (req, res, next) => {
+  const { params } = req
+  Sources.findById(params.id).then((old) => {
+    // console.log("old value", old)
+    req._old = {
+      ...old._doc
+    }
+    next()
+  })
+},postDelete: async (req, res, next) => {
+  const { _old } = req
+  console.log(_old)
+  await Tags.updateMany({ _id: {$in: _old.tags }}, {$inc:{ total: -1 }}).exec();
+  await Types.updateOne({_id: _old.type}, {$inc:{ total: -1 }}).exec();
   next()
 }, postRead: (req, res, next) => {
   if(Array.isArray(req.erm.result)){
