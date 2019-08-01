@@ -3,6 +3,7 @@ const DataLoader = require('dataloader');
 const Source = require('../../models/source');
 const User = require('../../models/user');
 const Type = require('../../models/type');
+const Tag = require('../../models/tag');
 
 const userLoader = new DataLoader(userIds => {
   return User.find({ _id: { $in: userIds } });
@@ -11,6 +12,11 @@ const userLoader = new DataLoader(userIds => {
 const typeLoader = new DataLoader(typeIds => {
   console.log("typeLoader",typeIds)
   return Type.find({ _id: { $in: typeIds } });
+});
+
+const tagLoader = new DataLoader(typeIds => {
+  console.log("typeLoader",typeIds)
+  return Tag.find({ _id: { $in: typeIds } });
 });
 
 const user = async userId => {
@@ -47,6 +53,7 @@ const transformSource = source => {
       _id: source.id,
       creator: user.bind(this, source._doc.creator),
       type: type.bind(this, source._doc.type),
+      tags: () => tagLoader.loadMany(source._doc.tags),
   };
 };
 

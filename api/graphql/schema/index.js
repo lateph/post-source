@@ -20,7 +20,7 @@ type Source {
   thumb: String
   category: String
   type: Type
-  tags: [String!]
+  tags: [Tag]
   creator: User
   createdAt: DateTime
   updatedAt: DateTime

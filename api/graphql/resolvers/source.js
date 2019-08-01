@@ -92,7 +92,7 @@ module.exports = {
       console.log("save oke")
       createdSource = transformSource(result);
       console.log("transform ok", createdSource)
-      await Tag.updateMany({ name: {$in: args.input.tags }}, {$inc:{ total: 1 }});
+      await Tag.updateMany({ _id: {$in: args.input.tags }}, {$inc:{ total: 1 }});
       await Type.updateOne({_id: args.input.type}, {$inc:{ total: 1 }});
       return {
         source: createdSource
