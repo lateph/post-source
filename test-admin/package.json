@@ -8,6 +8,7 @@
     "prop-types": "^15.7.2",
     "ra-data-feathers": "^2.1.0",
     "ra-data-json-server": "^2.9.4",
+    "ra-data-simple-rest": "^2.9.5",
     "ra-input-rich-text": "^2.9.3",
     "react": "^16.8.6",
     "react-admin": "^2.9.4",

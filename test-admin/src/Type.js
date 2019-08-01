@@ -2,7 +2,7 @@ import React, { Component }  from 'react';
 import { Create, SimpleForm, TextInput, LongTextInput, List, Datagrid, TextField, Edit } from 'react-admin';
 
 export const TypesList = props => (
-    <List {...props}>
+    <List {...props}  bulkActionButtons={false}>
         <Datagrid rowClick="edit">
             <TextField source="name" />
             <TextField source="desc" />

@@ -1,22 +1,27 @@
 import React from 'react';
-import { List, Datagrid, 
+import { List, Datagrid, ReferenceField, ReferenceInput,SelectInput,
     TextField, EmailField, Edit, SimpleForm, DisabledInput, TextInput, Create, FormDataConsumer, Labeled, FileInput, FileField,
     LongTextInput, RadioButtonGroupInput, ImageInput, ImageField, ReferenceArrayInput,SelectArrayInput,ChipField, ReferenceArrayField, SingleFieldList } from 'react-admin';
 import RichTextInput from 'ra-input-rich-text';
 import MyImgField from './MyImgField'
+import Typography from '@material-ui/core/Typography';
 
 export const SourcesList = props => (
-    <List {...props}>
+    <List   {...props}  bulkActionButtons={false}>
         <Datagrid rowClick="edit">
             <TextField source="title" />
-            <TextField source="shortDesc" />
+            <ReferenceField label="User" source="creator" reference="users">
+                <TextField source="email" />
+            </ReferenceField>
             <TextField source="category" />
+            <ReferenceField label="Type" source="type" reference="types">
+                <TextField source="name" />
+            </ReferenceField>
             <ReferenceArrayField label="Tags" reference="tags" source="tags">
                 <SingleFieldList>
                     <ChipField source="name" />
                 </SingleFieldList>
             </ReferenceArrayField>
-            <ImageField source="thumb" />
         </Datagrid>
     </List>
 );
@@ -32,6 +37,9 @@ export const SourcesEdit = props => (
                 { id: 'Trial', name: 'Trial' },
                 { id: 'Paid', name: 'Paid' },
             ]} />
+            <ReferenceInput label="Type" source="type" reference="types">
+                <SelectInput optionText="name" />
+            </ReferenceInput>
             <ReferenceArrayInput reference="tags" source="tags" label="Tags">
                 <SelectArrayInput>
                     <ChipField source="name" />
@@ -59,6 +67,9 @@ export const SourcesCreate = props => (
                 { id: 'Trial', name: 'Trial' },
                 { id: 'Paid', name: 'Paid' },
             ]} />
+            <ReferenceInput label="Type" source="type" reference="types">
+                <SelectInput optionText="name" />
+            </ReferenceInput>
             <ReferenceArrayInput reference="tags" source="tags" label="Tags">
                 <SelectArrayInput>
                     <ChipField source="name" />

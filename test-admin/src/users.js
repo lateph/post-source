@@ -2,18 +2,17 @@ import React from 'react';
 import { List, Datagrid, TextField, EmailField, Edit, SimpleForm, DisabledInput, TextInput, Create } from 'react-admin';
 
 export const UserList = props => (
-    <List {...props}>
+    <List {...props}  bulkActionButtons={false}>
         <Datagrid rowClick="edit">
-            <TextField source="id" />
+            <EmailField source="email" />
             <TextField source="firstName" />
             <TextField source="lastName" />
-            <EmailField source="email" />
         </Datagrid>
     </List>
 );
 
 export const UserEdit = props => (
-    <Edit {...props}>
+    <Edit {...props} undoable={false}>
         <SimpleForm>
             <DisabledInput source="id" />
             <TextInput source="firstName" />

@@ -10,13 +10,9 @@ import {
     fetchUtils,
 } from 'react-admin';
 import { stringify } from 'query-string';
-// import _ from 'lodash';
+import diff from 'object-diff';
 
-const API_URL = process.env.REACT_APP_URL
-
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-}
+const API_URL = process.env.REACT_APP_API_URL;
 
 /**
  * @param {String} type One of the constants appearing at the top of this file, e.g. 'UPDATE'
@@ -25,113 +21,27 @@ function capitalize(string) {
  * @returns {Object} { url, options } The HTTP request parameters
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
+    console.log(params)
     switch (type) {
     case GET_LIST: {
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
-            sort: JSON.stringify([field, order]),
-            range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+            sort: order == "DESC" ? `-${field}` : field,
+            // limit: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+            limit: perPage,
+            skip:  (page - 1) * perPage,
             filter: JSON.stringify(params.filter),
         };
-        console.log(params)
-        var requestBody = {};
-        console.log(resource)
-        if(resource === "sources"){
-            requestBody = {
-                query: `
-                  query CreateUser($t: String){
-                    sources(filter: {tags: $t}){
-                      _id
-                      title
-                      shortDesc
-                      createdAt
-                      slug
-                      thumb
-                      file
-                      creator{
-                        email
-                        firstName
-                        lastName
-                      }
-                    }
-                    countSources(filter: {tags: $t})
-                  }
-                  `,
-                  variables: {}
-              };
-        }
-        else if(resource === "users"){
-            requestBody = {
-                query: `
-                  query CreateUser($t: String){
-                    users(filter: {firstName: $t}){
-                        _id
-                        firstName
-                        lastName
-                        email
-                    }
-                    countUsers(filter: {firstName: $t})
-                  }
-                  `,
-                  variables: {}
-              };
-        }
-        return { 
-            url: `${API_URL}`,
-            options: { method: 'POST', body: JSON.stringify(requestBody) }
-        };
+        return { url: `${API_URL}/${resource}?${stringify(query)}` , options:{}};
     }
     case GET_ONE:
-        console.log(params)
-        if(resource === "sources"){
-            requestBody = {
-                query: `
-                    query CreateUser($t: String){
-                        source(filter: {tags: $t}){
-                            _id
-                            title
-                            shortDesc
-                            createdAt
-                            slug
-                            thumb
-                            file
-                            creator{
-                            email
-                            firstName
-                            lastName
-                        }
-                    }
-                    `,
-                    variables: {}
-                };
-        }
-        else if(resource === "users"){
-            requestBody = {
-                query: `
-                    query CreateUser($id: ID!){
-                        user(_id: $id){
-                            _id
-                            firstName
-                            lastName
-                            email
-                        }
-                    }
-                    `,
-                    variables: {
-                        id: params.id
-                    }
-                };
-        }
-        return { 
-            url: `${API_URL}`,
-            options: { method: 'POST', body: JSON.stringify(requestBody) }
-        };
+        return { url: `${API_URL}/${resource}/${params.id}` , options:{}};
     case GET_MANY: {
         const query = {
-            filter: JSON.stringify({ id: params.ids }),
+            query: JSON.stringify({ _id: {$in: params.ids} }),
         };
-        return { url: `${API_URL}/${resource}?${stringify(query)}` };
+        return { url: `${API_URL}/${resource}?${stringify(query)}`, options:{} };
     }
     case GET_MANY_REFERENCE: {
         const { page, perPage } = params.pagination;
@@ -141,54 +51,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             range: JSON.stringify([(page - 1) * perPage, (page * perPage) - 1]),
             filter: JSON.stringify({ ...params.filter, [params.target]: params.id }),
         };
-        return { url: `${API_URL}/${resource}?${stringify(query)}` };
+        return { url: `${API_URL}/${resource}?${stringify(query)}`, options:{} };
     }
     case UPDATE:
-        console.log("params", params)
-        return
-        if(resource === "sources"){
-            requestBody = {
-                query: `
-                    query CreateUser($t: String){
-                        source(filter: {tags: $t}){
-                            _id
-                            title
-                            shortDesc
-                            createdAt
-                            slug
-                            thumb
-                            file
-                            creator{
-                            email
-                            firstName
-                            lastName
-                        }
-                    }
-                    `,
-                    variables: {}
-                };
-        }
-        else if(resource === "users"){
-            requestBody = {
-                query: `
-                    query CreateUser($id: ID!, $firstName: String, $lastName: String){
-                        updateUser(_id: $id, input: {firstName: $firstName, lastName: $lastName}){
-                            _id
-                            firstName
-                            lastName
-                            email
-                        }
-                    }
-                    `,
-                    variables: {
-                        ...params.data,
-                        id: params.id
-                    }
-                };
-        }
-        return { 
-            url: `${API_URL}`,
-            options: { method: 'POST', body: JSON.stringify(requestBody) }
+        const data = params.previousData ? diff(params.previousData, params.data) : params.data;
+        return {
+            url: `${API_URL}/${resource}/${params.id}`,
+            options: { method: 'PATCH', body: JSON.stringify(data) },
         };
     case CREATE:
         return {
@@ -214,16 +83,52 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
     const { headers, json } = response;
-    console.log(json)
+    console.log("data",response)
     switch (type) {
-    case GET_LIST:
+    case DELETE:
         return {
-            data: json.data[resource].map(resource => ({ ...resource, id: resource._id }) ),
-            total: json.data[`count${capitalize(resource)}`],
+            data: {
+            'id': params.id
+            }
         };
     case GET_ONE:
-        const r = resource.substring(0, resource.length - 1);
-        return { data: { ...json.data[r], id: json.data[r].id } };
+        return {
+            data: {
+                ...json,
+                'id': json._id
+            }
+        };
+    case CREATE:
+        return {
+            data: {
+                ...json,
+                'id': json._id
+            }
+        };
+    case UPDATE:
+        return {
+            data: {
+                ...json,
+                'id': json._id
+            }
+        };
+    case GET_MANY:
+        return {
+            data: json.map(x => ({
+                ...x,
+                'id': x._id
+            })),
+            total: parseInt(headers.get('X-Total-Count')),
+        };
+    case GET_LIST:
+        console.log(headers.get('X-Total-Count'))
+        return {
+            data: json.map(x => ({
+                ...x,
+                'id': x._id
+            })),
+            total: parseInt(headers.get('X-Total-Count')),
+        };
     case CREATE:
         return { data: { ...params.data, id: json.id } };
     default:
@@ -240,6 +145,19 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
 export default (type, resource, params) => {
     const { fetchJson } = fetchUtils;
     const { url, options } = convertDataProviderRequestToHTTP(type, resource, params);
+    const token = localStorage.getItem('token');
+    console.log(options)
+    if(token && token !== "undefined"){
+        if (!options.headers) {
+            options.headers = new Headers({ 
+                Accept: 'application/json', 
+            });
+        }
+        options.headers.set('Authorization', `Bearer ${token}`);
+        // options.headers = {
+        //     'Authorization': `Bearer ${token}`
+        // };
+    }
     return fetchJson(url, options)
         .then(response => convertHTTPResponseToDataProvider(response, type, resource, params));
 };
