@@ -5,8 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Months from '../components/common/Months';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import Loading from '../components/common/Loading';
 import Category from '../components/Category'
 import Tags from '../components/Tags'
 import ContentBlog from '../components/ContentBlog'

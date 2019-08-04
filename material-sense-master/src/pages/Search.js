@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import fetcher from '../api';
 import Tags from '../components/Tags'
+import Category from '../components/Category'
 import PostCard from './home/card';
 import TablePagination from '@material-ui/core/TablePagination';
 import { createMuiTheme } from "@material-ui/core/styles";
@@ -119,29 +120,58 @@ class Dashboard extends Component {
 
   state = {
     t: "",
+    c: "",
     types: [],
     tags: [],
     blogs: [],
+
+    perPage: 9,
+    page: 0,
+    count: 0
   };
 
-  handleChangePage(){
-
+  constructor(props) {
+    super(props);
+    this.handleChangePage = this.handleChangePage.bind(this)
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
   }
-  handleChangeRowsPerPage(){
 
+  handleChangePage(event, newPage){
+    this.setState({
+      page: newPage
+    }, () => this.fetchBlog())
+  }
+  handleChangeRowsPerPage(event){
+    this.setState({
+      perPage: +event.target.value,
+      page: 0
+    }, () => this.fetchBlog())
   }
 
   componentDidMount() {
     this.fetchDatas();
+
+    const v = queryString.parse(this.props.location.search)
+    console.log(v)
+    this.setState({
+      t: v.t,
+      c: v.c,
+      page: 0
+    }, () => this.fetchBlog());
+
     this.fetchBlog();
   }
 
   componentWillReceiveProps(nextProps){
     console.log(nextProps)
     const v = queryString.parse(nextProps.location.search)
+    console.log(v)
+
     if (nextProps.location.state === 'loadBlogs') {
       this.setState({
         t: v.t,
+        c: v.c,
+        page: 0
       }, () => this.fetchBlog());
     }
   }
@@ -189,12 +219,12 @@ class Dashboard extends Component {
 
   fetchBlog() {
     const values = queryString.parse(this.props.location.search)
-    console.log(values)
+    console.log()
     this.setState({ isLoading: true });
     const requestBody = {
       query: `
-        query CreateUser($t: String){
-          sources(filter: {tags: $t}){
+        query CreateUser($t: String, $c: String, $skip: Int, $limit: Int){
+          sources(filter: {tags: $t, type: $c}, pagination: {skip: $skip, limit: $limit}){
             _id
             title
             shortDesc
@@ -207,17 +237,24 @@ class Dashboard extends Component {
               lastName
             }
           }
+          countSources(filter: {tags: $t, type: $c})
         }
         `,
-        variables: _.omitBy({
-          t: this.state.t
-        }, _.isEmpty)
+        variables:  {
+          ..._.omitBy({
+            t: this.state.t,
+            c: this.state.c,
+          }, _.isEmpty),
+          skip: this.state.page*this.state.perPage,
+          limit: this.state.perPage,
+        }
     };
 
     fetcher(requestBody)
       .then(resData => {
         this.setState({
-          blogs: resData.data.sources
+          blogs: resData.data.sources,
+          count: resData.data.countSources,
         });
 
         // const events = resData.data.events;
@@ -265,12 +302,12 @@ class Dashboard extends Component {
                 <Grid spacing={1} container>
                   <Grid item xs={12}>
                     <Paper>
-                      <Tags tags={this.state.tags}/>
+                      <Tags tags={this.state.tags} search={this.props.location.search}/>
                     </Paper>
                   </Grid>
                   <Grid item xs={12}>
                     <Paper>
-                      <Tags tags={this.state.tags}/>
+                      <Category types={this.state.types}  search={this.props.location.search}/>
                     </Paper>
                   </Grid>
                 </Grid>
@@ -287,11 +324,11 @@ class Dashboard extends Component {
                       ))}
                     <Grid item xs={12}>
                     <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[9, 18, 32]}
                         component="div"
-                        count={100}
-                        rowsPerPage={10}
-                        page={2}
+                        count={this.state.count}
+                        rowsPerPage={this.state.perPage}
+                        page={this.state.page}
                         backIconButtonProps={{
                           'aria-label': 'Previous Page',
                         }}
