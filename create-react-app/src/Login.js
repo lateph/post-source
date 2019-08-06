@@ -18,7 +18,10 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { userActions } from './_actions';
+import { connect } from 'react-redux';
 const backgroundShape = require('./images/shape.svg');
+
 
 const styles = theme => ({
   root: {
@@ -67,57 +70,14 @@ class AuthPage extends Component {
 
   submitHandler = event => {
     event.preventDefault();
-
-    const {email, password} = this.state;
-
+    
+    const { email, password } = this.state;
     if (email.trim().length === 0 || password.trim().length === 0) {
       return;
     }
-
-    let requestBody = {
-      query: `
-        query Login($email: String!, $password: String!) {
-          login(email: $email, password: $password) {
-            userId
-            token
-            tokenExpiration
-          }
-        }
-      `,
-      variables: {
-        email: email,
-        password: password
-      }
-    };
-
-    this.setState({isLoading: true});
-    fetch(process.env.REACT_APP_URL, {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        this.setState({isLoading: false});
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
-        }
-        return res.json();
-      })
-      .then(resData => {
-        this.setState({isLoading: false});
-        if (resData.data.login.token) {
-          this.context.login(
-            resData.data.login.token,
-            resData.data.login.userId,
-            resData.data.login.tokenExpiration
-          );
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (email && password) {
+      console.log(this.props.login(email, password));
+    }
   };
 
   handleChange(event) {
@@ -200,4 +160,14 @@ class AuthPage extends Component {
   }
 }
 
-export default withRouter(withStyles(styles)(AuthPage));
+function mapState(state) {
+  const { loggingIn } = state.authentication;
+  return { loggingIn };
+}
+
+const actionCreators = {
+  login: userActions.login
+};
+
+const connectedLoginPage = connect(mapState, actionCreators)(AuthPage);
+export default withRouter(withStyles(styles)(connectedLoginPage));

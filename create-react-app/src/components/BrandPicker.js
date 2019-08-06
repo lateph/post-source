@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
+import { connect } from 'react-redux'
 
 const useStyles = makeStyles(({ spacing }) => ({
   action: {
@@ -13,15 +14,15 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-const BrandPicker = ({ brands }) => {
+const BrandPicker = (props) => {
   const classes = useStyles();
   return (
     <List>
-      {brands.map(({ active, title }) => {
+      {props.items.map(({ active, name }) => {
         const color = active ? 'primary' : 'textSecondary';
         return (
-          <ListItem button key={title} dense>
-            <ListItemText primary={title} primaryTypographyProps={{ color }} />
+          <ListItem button key={name} dense>
+            <ListItemText primary={name} primaryTypographyProps={{ color }} />
             <ListItemSecondaryAction className={classes.action}>
               <Checkbox color={'primary'} checked={active} />
             </ListItemSecondaryAction>
@@ -32,34 +33,16 @@ const BrandPicker = ({ brands }) => {
   );
 };
 
-BrandPicker.propTypes = {
-  brands: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      amount: PropTypes.number,
-    }),
-  ),
-};
-BrandPicker.defaultProps = {
-  brands: [],
-};
-BrandPicker.data = [
-  {
-    title: 'Adidas',
-  },
-  {
-    title: 'Nike',
-    active: true,
-  },
-  {
-    title: 'Balenciaga',
-  },
-  {
-    title: 'NB Balance',
-  },
-  {
-    title: 'Sketcher',
-  },
-];
+function mapState(state) {
+  const { items } = state.tags;
+  return { 
+    items
+  };
+}
 
-export default BrandPicker;
+const actionCreators = {
+};
+
+const connectedLoginPage = connect(mapState, actionCreators)(BrandPicker);
+
+export default connectedLoginPage;

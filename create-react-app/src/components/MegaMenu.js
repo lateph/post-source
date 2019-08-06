@@ -54,10 +54,10 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const MegaMenu = ({ menus, subMenus, cover }) => {
-  const [tabIndex, setTabIndex] = useState();
+  const [tabIndex, setTabIndex] = useState(false);
   const classes = useStyles();
   return (
-    <div className={classes.root} onMouseLeave={() => setTabIndex(undefined)}>
+    <div className={classes.root} onMouseLeave={() => setTabIndex(false)}>
       <Tabs
         centered
         classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}

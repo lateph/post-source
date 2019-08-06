@@ -4,16 +4,17 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from './extensions/Typography';
+import { connect } from 'react-redux'
 
-const CategoryPicker = ({ categories }) => (
+const CategoryPicker = (props) => (
   <List>
-    {categories.map(({ active, title, amount }) => {
+    {props.items.map(({ active, name, total }) => {
       const color = active ? 'primary' : 'textSecondary';
       return (
-        <ListItem button key={title} dense>
-          <ListItemText primary={title} primaryTypographyProps={{ color }} />
+        <ListItem button key={name} dense>
+          <ListItemText primary={name} primaryTypographyProps={{ color }} />
           <Typography variant={'body2'} color={color}>
-            {amount}
+            {total}
           </Typography>
         </ListItem>
       );
@@ -21,55 +22,16 @@ const CategoryPicker = ({ categories }) => (
   </List>
 );
 
-CategoryPicker.propTypes = {
-  categories: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      amount: PropTypes.number,
-    }),
-  ),
-};
-CategoryPicker.defaultProps = {
-  categories: [],
-};
-CategoryPicker.data = [
-  {
-    title: 'Lifestyle',
-    amount: 56,
-  },
-  {
-    title: 'Running',
-    amount: 1,
-    active: true,
-  },
-  {
-    title: 'Basketball',
-    amount: 23,
-  },
-  {
-    title: 'Soccer',
-    amount: 40,
-  },
-  {
-    title: 'Baseball',
-    amount: 11,
-  },
-  {
-    title: 'Training',
-    amount: 2,
-  },
-  {
-    title: 'Golf',
-    amount: 8,
-  },
-  {
-    title: 'Skateboarding',
-    amount: 15,
-  },
-  {
-    title: 'Football',
-    amount: 14,
-  },
-];
+function mapState(state) {
+  const { items } = state.types;
+  return { 
+    items
+  };
+}
 
-export default CategoryPicker;
+const actionCreators = {
+};
+
+const connectedLoginPage = connect(mapState, actionCreators)(CategoryPicker);
+
+export default connectedLoginPage;

@@ -92,19 +92,19 @@ const AmigoHome = () => (
                 <Grid container>
                   <Hidden only={'xs'}>
                     <Grid item xs={12} sm={4} md={3}>
-                      <Expander label={'CATEGORY'}>
-                        <CategoryPicker categories={CategoryPicker.data} />
+                      <Expander label={'TYPES'}>
+                        <CategoryPicker />
                       </Expander>
                       <Divider light />
-                      <Expander label={'PRICE'}>
+                      {/* <Expander label={'PRICE'}>
                         <PricePicker min={10} max={400} />
-                      </Expander>
-                      <Divider light />
-                      <Expander label={'BRAND'}>
+                      </Expander> */}
+                      {/* <Divider light /> */}
+                      <Expander label={'TAGS'}>
                         <BrandPicker brands={BrandPicker.data} />
                       </Expander>
-                      <Divider light />
-                      <Expander label={'COLOR'}>
+                      {/* <Divider light /> */}
+                      {/* <Expander label={'COLOR'}>
                         <Box p={1}>
                           <ColorPicker colors={ColorPicker.data} />
                         </Box>
@@ -114,7 +114,7 @@ const AmigoHome = () => (
                         <Box p={1}>
                           <SizePicker sizes={SizePicker.data} />
                         </Box>
-                      </Expander>
+                      </Expander> */}
                       <Divider light />
                     </Grid>
                   </Hidden>

@@ -10,6 +10,11 @@ import InputBase from '@material-ui/core/InputBase';
 import Typography from '../extensions/Typography';
 import Button from '../extensions/Button';
 import MegaMenu from '../MegaMenu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import { Link } from 'react-router-dom';
+import { userActions } from '../../_actions';
+import { connect } from 'react-redux'
 
 const useStyles = makeStyles(({ transitions }) => ({
   searchInput: ({ searchAppeared }) => ({
@@ -36,10 +41,12 @@ const useStyles = makeStyles(({ transitions }) => ({
   },
 }));
 
-const AmiLargeHeader = () => {
+const AmiLargeHeader = (props) => {
   const trigger = useScrollTrigger();
   const inputRef = useRef(null);
   const [searchAppeared, setSearchAppeared] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [auth, setAuth] = React.useState(true)
   const classes = useStyles({ searchAppeared, trigger });
   const handleSearchClick = () => {
     setSearchAppeared(!searchAppeared);
@@ -47,6 +54,27 @@ const AmiLargeHeader = () => {
       inputRef.current.focus();
     }
   };
+
+  const open = Boolean(anchorEl);
+
+  function handleChange(event) {
+    setAuth(event.target.checked);
+  }
+
+  function handleMenu(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  function handleLogout(){
+    props.logout()
+  }
+
+  console.log(props)
+  
   return (
     <>
       <Slide appear={false} direction="down" in={!trigger}>
@@ -87,7 +115,25 @@ const AmiLargeHeader = () => {
                     />
                   </Grid>
                   <Grid item>
-                    <Button icon={'far fa-user'} shape={'circular'} inverted />
+                    <Button icon={'far fa-user'} shape={'circular'} inverted onClick={handleMenu} />
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      open={open}
+                      onClose={handleClose}
+                    >
+                      { !props.loggedIn ? <MenuItem onClick={handleClose} component={Link}  to="/login">Login</MenuItem> : <MenuItem onClick={handleLogout}>Logout</MenuItem> }
+                      <MenuItem onClick={handleClose}>My account</MenuItem>
+                    </Menu>
                   </Grid>
                   {/* <Grid item>
                     <Button icon={'far fa-heart'} shape={'circular'} inverted />
@@ -115,12 +161,9 @@ const AmiLargeHeader = () => {
       >
         <Toolbar>
           <MegaMenu
-            menus={[
-              { label: 'NEW RELEASES' },
-              { label: 'MEN' },
-              { label: 'WOMEN' },
-              { label: 'KIDS' },
-            ]}
+            menus={props.types.map(type => {
+              return { label: type.name }
+            })}
           />
         </Toolbar>
       </AppBar>
@@ -131,4 +174,19 @@ const AmiLargeHeader = () => {
 AmiLargeHeader.propTypes = {};
 AmiLargeHeader.defaultProps = {};
 
-export default AmiLargeHeader;
+function mapState(state) {
+  const { loggedIn } = state.authentication;
+  return { 
+    loggedIn,
+    types: state.types.items
+  };
+}
+
+const actionCreators = {
+  logout: userActions.logout
+};
+
+const connectedLoginPage = connect(mapState, actionCreators)(AmiLargeHeader);
+// export default withRouter(withStyles(styles)(connectedLoginPage));
+
+export default connectedLoginPage;
