@@ -5,6 +5,7 @@ import AuthContext from './context/auth-context';
 import { BrowserRouter, Route, Redirect, Router } from 'react-router-dom';
 import HomePage from './AmigoHome'
 import LoginPage from './Login'
+import CreatePage from './Create'
 import { history } from './_helpers';
 import { typeActions, tagActions } from './_actions';
 import { connect } from 'react-redux'
@@ -41,8 +42,8 @@ class App extends Component {
               <Route exact path="/" component={HomePage} />
               <Route path="/login" component={LoginPage} />
               <Route exact path='/signup' component={ Signup } />
-              {/* <Route path="/new" component={CreateBlog} />
-              <Route path="/post/:slug" component={Blog} />
+              <Route path="/create" component={CreatePage} />
+              {/*<Route path="/post/:slug" component={Blog} />
               <Route path="/search" component={Search} />
               <Route exact path='/signup' component={ Signup } />
               <Route exact path='/wizard' component={ Wizard } />
