@@ -131,8 +131,7 @@ const AmiLargeHeader = (props) => {
                       open={open}
                       onClose={handleClose}
                     >
-                      { !props.loggedIn ? <MenuItem onClick={handleClose} component={Link}  to="/login">Login</MenuItem> : <MenuItem onClick={handleLogout}>Logout</MenuItem> }
-                      <MenuItem onClick={handleClose}>My account</MenuItem>
+                      { !props.loggedIn ? [<MenuItem onClick={handleClose} component={Link}  to="/login">Login</MenuItem>, <MenuItem onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>] : <MenuItem onClick={handleLogout}>Logout</MenuItem> }
                     </Menu>
                   </Grid>
                   {/* <Grid item>

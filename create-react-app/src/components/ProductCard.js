@@ -13,9 +13,9 @@ const ProductCard = props => {
       onMouseLeave={() => setShowed(false)}
     >
       <ProductCardFront {...props} />
-      <Fade in={showed}>
+      {/* <Fade in={showed}>
         <ProductCardBack {...props} />
-      </Fade>
+      </Fade> */}
     </div>
   );
 };

@@ -27,7 +27,6 @@ function login(email, password) {
         }
     };
   
-    //   this.setState({isLoading: true});
     return fetch(process.env.REACT_APP_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
@@ -36,39 +35,68 @@ function login(email, password) {
         }
     })
         .then(res => {
-        //   this.setState({isLoading: false});
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Failed!');
             }
             return res.json();
         })
         .then(resData => {
-            // this.setState({isLoading: false});
             localStorage.setItem('user', JSON.stringify(resData.data.login.token));
             return resData.data.login
-            // if (resData.data.login.token) {
-            //     this.context.login(
-            //         resData.data.login.token,
-            //         resData.data.login.userId,
-            //         resData.data.login.tokenExpiration
-            //     );
-            // }
         })
+}
 
-    // const requestOptions = {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ username, password })
-    // };
+function register({ email, password, firstName, lastName }) {
+    var requestBody = {
+        query: `
+          mutation CreateUser($email: String, $password: String, $firstName: String, $lastName: String) {
+            createUser(userInput: {email: $email, password: $password, firstName: $firstName, lastName: $lastName}) {
+              errors {
+                email
+                password
+                firstName
+                lastName
+              }
+              auth {
+                userId
+                token
+                tokenExpiration
+              }
+            }
+          }
+        `,
+        variables: {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password
+        }
+    };
 
-    // return fetch(`/users/authenticate`, requestOptions)
-    //     .then(handleResponse)
-    //     .then(user => {
-    //         // store user details and jwt token in local storage to keep user logged in between page refreshes
-    //         localStorage.setItem('user', JSON.stringify(user));
-
-    //         return user;
-    //     });
+    return fetch(process.env.REACT_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => {
+        //   this.setState({isLoading: false});
+          if (res.status !== 200 && res.status !== 201) {
+            throw new Error('Failed!');
+          }
+          return res.json();
+        })
+        .then(resData => {
+          let errors = resData.data.createUser.errors
+          console.log('errors', errors)
+          if(errors !== null && errors){
+            throw errors
+          }
+        //   this.setState({isLoading: false});
+  
+          return resData.data.createUser.auth
+        })
 }
 
 function logout() {
@@ -94,15 +122,6 @@ function getById(id) {
     return fetch(`/users/${id}`, requestOptions).then(handleResponse);
 }
 
-function register(user) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
-    };
-
-    return fetch(`/users/register`, requestOptions).then(handleResponse);
-}
 
 function update(user) {
     const requestOptions = {
