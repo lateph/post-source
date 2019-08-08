@@ -196,9 +196,7 @@ class AuthPage extends Component {
     this.setState({isLoading: true});
     fetcher(requestBody)
       .then(resData => {
-        console.log(resData)
         let errors = resData.data.createSource.errors
-        console.log('errors', errors)
         if(errors !== null && errors){
           this.setState({
             isLoading: false, 

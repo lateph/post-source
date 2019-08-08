@@ -34,6 +34,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import AttachFile from '@material-ui/icons/AttachFile';
 import AmiLargeHeader from './components/header';
 import { connect } from 'react-redux'
+import { sourceActions } from './_actions';
 
 const styles = theme => ({
   root: {
@@ -147,7 +148,7 @@ class AuthPage extends Component {
   }
 
   componentDidMount() {
-    this.fetchDatas();
+    // this.fetchDatas();
   }
 
   onEditorStateChange = (editorState) => {
@@ -159,75 +160,7 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    const {title, shortDesc, category, type, tags} = this.state;
-
-    let requestBody = {
-      query: `
-      mutation Source($title: String, $shortDesc: String , $desc: String , $category: String , $type: String, $tags: [String!]) {
-          createSource(input: {title: $title, shortDesc: $shortDesc , desc: $desc , category: $category , type: $type, tags: $tags}) {
-            errors {
-              title
-              shortDesc
-              desc
-              category
-              type
-              tags
-            }
-            source{
-              _id
-              slug
-            }
-          }
-        }
-      `,
-      variables: {
-        title: title,
-        shortDesc: shortDesc,
-        desc: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
-        category: category,
-        type: type,
-        tags: tags.map(t => t.label)
-      }
-    };
-
-    this.setState({isLoading: true});
-    // fetcher(requestBody)
-    //   .then(resData => {
-    //     console.log(resData)
-    //     let errors = resData.data.createSource.errors
-    //     console.log('errors', errors)
-    //     if(errors !== null && errors){
-    //       this.setState({
-    //         isLoading: false, 
-    //         formValidation: errors
-    //       });
-    //       console.log(this.state)
-    //       throw Error(errors)
-    //     }
-    //     return resData
-    //   })
-    //   .then(  async (resData) =>  {
-    //     console.log("upload id", resData)
-    //     try {
-    //       if(this.state.file)
-    //         await this.sendRequest(this.state.file, resData.data.createSource.source._id, 'file');
-    //     } catch (error) {
-          
-    //     }
-    //     try {
-    //       if(this.state.thumb)
-    //         await this.sendRequest(this.state.thumb, resData.data.createSource.source._id, 'thumb');
-    //     } catch (error) {
-          
-    //     }
-    //     this.props.history.push('/post/'+resData.data.createSource.source.slug)
-
-    //     this.setState({isLoading: false});
-    //   })
-    //   .catch(err => {
-    //     this.setState({isLoading: false});
-    //     console.log(err);
-    //   });
+    this.props.create(this.state)
   };
 
   handleChange(event) {
@@ -289,46 +222,13 @@ class AuthPage extends Component {
     this.setState({tags: values});
   }
 
-  fetchDatas() {
-    this.setState({ isLoading: true });
-    const requestBody = {
-      query: `
-        query{
-          types{
-            _id
-            name
-          }
-          tags{
-            _id
-            name
-          }
-        }
-        `
-    };
-
-    // fetcher(requestBody)
-    //   .then(resData => {
-    //     console.log("type", resData)
-    //     this.setState({ _types: resData.data.types, _tags: resData.data.tags, isLoading: false  });
-
-    //     // const events = resData.data.events;
-    //     // if (this.isActive) {
-    //     //   this.setState({ events: events, isLoading: false });
-    //     // }
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     if (this.isActive) {
-    //       this.setState({ isLoading: false });
-    //     }
-    //   });
-  }
-
   render() {
     const currentPath = this.props.location.pathname
     const { classes } = this.props;
     const { editorState } = this.state;
-
+    // const message = {}
+    const message = this.props.alert.message ? this.props.alert.message.errors : {}
+    console.log('erropr', this.props.alert.message)
     console.log(this.state.file)
     
     return (
@@ -349,8 +249,8 @@ class AuthPage extends Component {
                       name="title"
                       label="Title"
                       onChange={ this.handleChange } 
-                      error={ !!this.state.formValidation.title }
-                      helperText={ !!this.state.formValidation.title ? this.state.formValidation.title.join(',') : "" }
+                      error={ !!message.title }
+                      helperText={ !!message.title ? message.title.message : "" }
                       fullWidth
                       autoComplete="fname"
                   />
@@ -363,8 +263,8 @@ class AuthPage extends Component {
                     label="Short Desc"
                     fullWidth
                     onChange={ this.handleChange } 
-                    error={ !!this.state.formValidation.shortDesc }
-                    helperText={ !!this.state.formValidation.shortDesc ? this.state.formValidation.shortDesc.join(',') : "" }
+                    error={ !!message.shortDesc }
+                    helperText={ !!message.shortDesc ? message.shortDesc.message : "" }
                     autoComplete="lname"
                 />
                 </Grid>
@@ -383,7 +283,7 @@ class AuthPage extends Component {
                         editorClassName="home-editor"
                         onEditorStateChange={this.onEditorStateChange}
                     />
-                    {!!this.state.formValidation.desc && <p>Error</p>}
+                    {!!message.desc && <p>Error</p>}
                 </Grid>
                 <Grid item xs={12}>
                     {/* <TextField
@@ -417,7 +317,7 @@ class AuthPage extends Component {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                <FormControl fullWidth error={ !!this.state.formValidation.type }>
+                <FormControl fullWidth error={ !!message.type }>
                     <InputLabel>Type</InputLabel>
                     <Select
                         id="type"
@@ -429,7 +329,7 @@ class AuthPage extends Component {
                             name: 'type',
                             id: 'type',
                         }}
-                        error={ !!this.state.formValidation.type }
+                        error={ !!message.type }
                         >
                         {this.props.types.map(t => (
                           <MenuItem key={t._id} value={t._id}>
@@ -437,7 +337,7 @@ class AuthPage extends Component {
                           </MenuItem>
                         ))}
                     </Select>
-                    { !!this.state.formValidation.type && <FormHelperText>{ this.state.formValidation.type.join(',') }</FormHelperText>}
+                    { !!message.type && <FormHelperText>{ message.type.message }</FormHelperText>}
                 </FormControl>
                 </Grid>
                 <Grid item xs={12}>
@@ -500,8 +400,8 @@ class AuthPage extends Component {
                 </Grid>
             </Grid>
             <div className={classes.buttons}>
-                <Button className={classes.button} color="primary" variant="contained" onClick={event => this.submitHandler(event)} disabled={this.state.isLoading} >
-                  {this.state.isLoading && <CircularProgress size={24} className={classes.buttonProgress} color="secondary" />}
+                <Button className={classes.button} color="primary" variant="contained" onClick={event => this.submitHandler(event)} disabled={this.props.loading} >
+                  {this.props.loading && <CircularProgress size={24} className={classes.buttonProgress} color="secondary" />}
                   Submit
                 </Button>
             </div>
@@ -518,12 +418,13 @@ function mapState(state) {
     return { 
         types: state.types.items,
         tags: state.tags.items,
+        loading: state.sources.loading,
+        alert: state.alert
     };
 }
 
 const actionCreators = {
-    // getTypes: typeActions.getAll,
-    // getTags: tagActions.getAll
+  create: sourceActions.create
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(AuthPage);

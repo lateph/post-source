@@ -7,20 +7,20 @@ const Schema = mongoose.Schema;
 const sourceSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: [true, 'Title is required']
   },
   slug: { type: String, slug: "title" , unique: true},
   shortDesc: {
     type: String,
-    required: true
+    required: [true, 'Short Desc is required']
   },
   desc: {
     type: String,
-    required: true
+    required:  [true, 'Desc is required']
   },
   category: {
     type: String,
-    required: true
+    required:  [true, 'Category is required']
   },
   file: {
     type: String,
@@ -33,11 +33,13 @@ const sourceSchema = new Schema({
   }],
   type: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required:  [true, 'Type is required']
   },
   creator: {
     type: Schema.Types.ObjectId,
-    ref: 'Users'
+    ref: 'Users',
+    required:  [false, 'Creator is required']
   },
 }, 
 { timestamps: true});

@@ -21,6 +21,8 @@ import SizePicker from './components/SizePicker';
 import Pagination from './components/Pagination';
 import EmailInput from './components/EmailInput';
 import MobileSelector from './components/MobileSelector';
+import TwitterButton from './components/TwitterButton';
+import { Link } from 'react-router-dom';
 
 const AmigoHome = () => (
     <>
@@ -28,7 +30,7 @@ const AmigoHome = () => (
       <AmiLargeHeader />
       <Box bgcolor={'common.white'}>
         <Box
-          bgcolor={'#CDD5FF'}
+          bgcolor={'#fff6da'}
           height={{
             xs: 144,
             md: 200,
@@ -39,15 +41,26 @@ const AmigoHome = () => (
             md: 5,
           }}
         >
-          <Typography
-            secondFamily
-            weight={'bold'}
-            size={'big'}
-            bottomSpace={'small'}
-          >
-            MEN’S LIFESTYLE SHOE
-          </Typography>
-          <Typography>TOTAL 319 Source</Typography>
+          <Container fixed>
+            <Grid container spacing={3}>
+              <Grid item xs>
+              </Grid>
+              <Grid item xs={6}>
+                  <Typography
+                    secondFamily
+                    weight={'bold'}
+                    size={'big'}
+                    bottomSpace={'small'}
+                  >
+                    Power Builder
+                  </Typography>
+                  <Typography>TOTAL 319 Source</Typography>
+              </Grid>
+              <Grid item xs style={{textAlign:"right"}}>
+                <TwitterButton className={"default bottom"} variant={"outlined"} color={"secondary"} size={"large"}  component={Link}  to="/create">Create Article</TwitterButton>
+              </Grid>
+            </Grid>
+          </Container>
         </Box>
         <Box
           mt={{

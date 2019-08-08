@@ -6,6 +6,7 @@ import { users } from './users.reducer';
 import { alert } from './alert.reducer';
 import { types } from './types.reducer';
 import { tags } from './tags.reducer';
+import { sources } from './sources.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   users,
   alert,
   types,
-  tags
+  tags,
+  sources
 });
 
 export default rootReducer;
