@@ -5,7 +5,7 @@ export function sources(state = {}, action) {
     case sourceConstants.CREATE_REQUEST:
       return {
         loading: true,
-        source: action.source
+        // source: action.source
       };
     case sourceConstants.CREATE_SUCCESS:
       return {

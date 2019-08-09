@@ -6,7 +6,8 @@ import { tagActions } from './tag.actions'
 import { typeActions } from './type.actions'
 
 export const sourceActions = {
-    create
+    create,
+    getSlug
 };
 
 function create(source) {
@@ -29,6 +30,30 @@ function create(source) {
     };
 
     function request(source) { return { type: sourceConstants.SOURCES_REQUEST, source } }
+    function success(source) { return { type: sourceConstants.SOURCES_SUCCESS, source } }
+    function failure(error) { return { type: sourceConstants.SOURCES_FAILURE, error } }
+}
+
+function getSlug(slug) {
+    return dispatch => {
+        dispatch(request());
+
+        sourceService.find({slug})
+            .then(
+                source => { 
+                    dispatch(success(source));
+                    dispatch(tagActions.getAll());
+                    dispatch(typeActions.getAll());
+                    history.push('/');
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: sourceConstants.SOURCES_REQUEST } }
     function success(source) { return { type: sourceConstants.SOURCES_SUCCESS, source } }
     function failure(error) { return { type: sourceConstants.SOURCES_FAILURE, error } }
 }

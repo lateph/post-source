@@ -10,6 +10,7 @@ import { history } from './_helpers';
 import { typeActions, tagActions } from './_actions';
 import { connect } from 'react-redux'
 import Signup from './Register'
+import Blog from './Blog'
 
 const url =
   // eslint-disable-next-line max-len
@@ -43,6 +44,7 @@ class App extends Component {
               <Route path="/login" component={LoginPage} />
               <Route exact path='/signup' component={ Signup } />
               <Route path="/create" component={CreatePage} />
+              <Route path="/post/:slug" component={Blog} />
               {/*<Route path="/post/:slug" component={Blog} />
               <Route path="/search" component={Search} />
               <Route exact path='/signup' component={ Signup } />
