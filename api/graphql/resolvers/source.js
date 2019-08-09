@@ -10,6 +10,13 @@ const { transformSource } = require('./merge');
 module.exports = {
   sources: async (args) => {
     try {
+      if(args.filter.tags){
+        if(Array.isArray(args.filter.tags)) {
+          args.filter.tags = {$in: args.filter.tags};
+        } else {
+          args.filter.tags = args.filter.tags;
+        }
+      }
       const sources = await Source.find(args.filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
       return sources.map(source => {
         return transformSource(source);

@@ -54,6 +54,8 @@ const transformSource = source => {
       creator: user.bind(this, source._doc.creator),
       type: type.bind(this, source._doc.type),
       tags: () => tagLoader.loadMany(source._doc.tags),
+      thumbUrl: () => source._doc.thumb ?  `${process.env.BASE_URL}/thumb/${source._doc._id}${source._doc.thumb}`  : "",
+      fileUrl: () => source._doc.file ? `${process.env.BASE_URL}/file/${source._doc.file}`  : ""
   };
 };
 

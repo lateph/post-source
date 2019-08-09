@@ -18,6 +18,8 @@ type Source {
   slug: String
   file: String
   thumb: String
+  fileUrl: String
+  thumbUrl: String
   category: String
   type: Type
   tags: [Tag]
@@ -29,7 +31,7 @@ type Source {
 input SourceFilter {
   type: String
   category: String
-  tags: String
+  tags: [String]
 }
 
 input SourceInput {
