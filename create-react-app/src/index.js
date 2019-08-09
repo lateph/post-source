@@ -5,10 +5,14 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Provider } from 'react-redux';
 import App from './App';
 import theme from './theme';
+import themecard from './themecard';
 import { store } from './_helpers';
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={{
+    ...theme,
+    overrides: themecard(theme)
+  }}>
     {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
     <CssBaseline />
     <Provider store={store}>

@@ -16,6 +16,7 @@
     "color": "^3.1.2",
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
+    "lodash": "^4.17.15",
     "react": "latest",
     "react-dom": "latest",
     "react-draft-wysiwyg": "^1.13.2",

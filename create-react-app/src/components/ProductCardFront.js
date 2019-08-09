@@ -4,6 +4,7 @@ import Box from '@material-ui/core/Box';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { makeStyles } from '@material-ui/styles';
 import ProductInfo from './ProductInfo';
+import ReviewCard from './ReviewCard';
 
 const useStyles = makeStyles(({ palette }) => ({
   buttonBase: {
@@ -29,25 +30,28 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const ProductCardFront = ({ name, price, image, bordered }) => {
+const ProductCardFront = (props) => {
   const classes = useStyles();
+  const { title, thumb, price } = props.source;
+  console.log("props", props)
   return (
     <ButtonBase className={classes.buttonBase}>
       <Box
         height={'100%'}
-        {...bordered && {
+        {...props.bordered && {
           border: '1px solid #f0f0f0',
           borderTop: 'none',
           marginLeft: '-1px',
           marginTop: '-1px',
         }}
       >
-        <Box p={2}>
+        {/* <Box p={2}>
           <div className={classes.productImage}>
-            <img className={classes.img} src={image} alt={'product'} />
+            <img className={classes.img} src={thumb} alt={'product'} />
           </div>
         </Box>
-        <ProductInfo name={name} price={price} />
+        <ProductInfo name={title} price={price} /> */}
+        <ReviewCard {...props}/>
       </Box>
     </ButtonBase>
   );

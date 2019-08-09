@@ -7,6 +7,7 @@ import { alert } from './alert.reducer';
 import { types } from './types.reducer';
 import { tags } from './tags.reducer';
 import { sources } from './sources.reducer';
+import { search } from './search.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   alert,
   types,
   tags,
-  sources
+  sources,
+  search
 });
 
 export default rootReducer;
