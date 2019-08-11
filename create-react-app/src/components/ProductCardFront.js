@@ -33,7 +33,6 @@ const useStyles = makeStyles(({ palette }) => ({
 const ProductCardFront = (props) => {
   const classes = useStyles();
   const { title, thumb, price } = props.source;
-  console.log("props", props)
   return (
     <ButtonBase className={classes.buttonBase}>
       <Box

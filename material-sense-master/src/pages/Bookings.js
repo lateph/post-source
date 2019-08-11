@@ -57,7 +57,6 @@ class BookingsPage extends Component {
         this.setState({ bookings: bookings, isLoading: false });
       })
       .catch(err => {
-        console.log(err);
         this.setState({ isLoading: false });
       });
   };
@@ -101,7 +100,6 @@ class BookingsPage extends Component {
         });
       })
       .catch(err => {
-        console.log(err);
         this.setState({ isLoading: false });
       });
   };

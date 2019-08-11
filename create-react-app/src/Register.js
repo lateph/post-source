@@ -71,7 +71,7 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    console.log(this.props.register(this.state));
+    this.props.register(this.state);
   };
 
   handleChange(event) {

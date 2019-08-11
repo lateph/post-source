@@ -2,7 +2,7 @@ function updateOptions(body, options) {
     const update = { 
       ...options,
       body: JSON.stringify(body),
-      method: 'POST',
+      method: options.method ? options.method : 'POST',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -39,5 +39,5 @@ function updateOptions(body, options) {
     else if (res.status !== 200 && res.status !== 201) {
       throw new Error('Failed!')
     }
-    return res
+    return await res.json()
   }

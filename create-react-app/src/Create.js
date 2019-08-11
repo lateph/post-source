@@ -20,7 +20,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import Grid from '@material-ui/core/Grid';
 import { emphasize } from '@material-ui/core/styles';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
@@ -29,13 +29,14 @@ import { Editor } from 'react-draft-wysiwyg';
 import { InputLabel } from '@material-ui/core';
 import Autocomplete from './components/Autocomplete'
 import FormHelperText from '@material-ui/core/FormHelperText';
-import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import AttachFile from '@material-ui/icons/AttachFile';
 import AmiLargeHeader from './components/header';
 import { connect } from 'react-redux'
 import { sourceActions } from './_actions';
-
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
+// import stateFromHrml from 'draft-js-import-html'
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -110,17 +111,23 @@ const styles = theme => ({
 
 class AuthPage extends Component {
   state = {
+    _id:"",
     isLogin: true,
     title: "",
     shortDesc: "",
     desc: "",
     type: "",
+    thumbUrl: "",
+    thumbName: "",
+    fileUrl: "",
+    fileName: "",
     category: "Free",
     isLoading: false,
     editorState: EditorState.createEmpty(),
     tags: [],
     file: null,
     thumb: null,
+    update: false,
     uploadProgress: {
       state: "",
       percentage: 0
@@ -148,7 +155,32 @@ class AuthPage extends Component {
   }
 
   componentDidMount() {
-    // this.fetchDatas();
+    if(this.props.match && this.props.match.params && this.props.match.params){
+      this.props.getSlug(this.props.match.params.slug).then(ad => {
+        const blocksFromHTML = convertFromHTML(ad.desc)
+        const content = ContentState.createFromBlockArray(blocksFromHTML)
+        this.setState({
+          title: ad.title,
+          _id: ad._id,
+          desc: ad.desc,
+          shortDesc: ad.shortDesc,
+          type: ad.type._id,
+          category: ad.category,
+          thumbUrl: ad.thumbUrl,
+          thumbName: ad.thumb,
+          fileUrl: ad.fileUrl,
+          fileName: ad.file,
+          state: true,
+          tags: ad.tags.map(t => {
+            return {
+              label: t.name,
+              value: t._id
+            }
+          }),
+          editorState: EditorState.createWithContent(content)
+        })
+      })
+    }
   }
 
   onEditorStateChange = (editorState) => {
@@ -209,12 +241,10 @@ class AuthPage extends Component {
   }
 
   onFilesAdded(file) {
-    console.log(file.target.files[0])
     this.setState({file: file.target.files[0]});
   }
 
   onThumbsAdded(file) {
-    console.log(file.target.files[0])
     this.setState({thumb: file.target.files[0]});
   }
 
@@ -227,9 +257,7 @@ class AuthPage extends Component {
     const { classes } = this.props;
     const { editorState } = this.state;
     // const message = {}
-    const message = this.props.alert.message ? this.props.alert.message.errors : {}
-    console.log('erropr', this.props.alert.message)
-    console.log(this.state.file)
+    const message = this.props.alert.formMessage ? this.props.alert.formMessage.errors : {}
     
     return (
       <React.Fragment>
@@ -248,6 +276,7 @@ class AuthPage extends Component {
                       id="title"
                       name="title"
                       label="Title"
+                      value={this.state.title}
                       onChange={ this.handleChange } 
                       error={ !!message.title }
                       helperText={ !!message.title ? message.title.message : "" }
@@ -262,6 +291,7 @@ class AuthPage extends Component {
                     name="shortDesc"
                     label="Short Desc"
                     fullWidth
+                    value={this.state.shortDesc}
                     onChange={ this.handleChange } 
                     error={ !!message.shortDesc }
                     helperText={ !!message.shortDesc ? message.shortDesc.message : "" }
@@ -341,7 +371,7 @@ class AuthPage extends Component {
                 </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <Autocomplete options={this.props.tags} onChange={this.setTags}/>
+                  <Autocomplete options={this.props.tags} onChange={this.setTags} valuex={this.state.tags}/>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -369,6 +399,10 @@ class AuthPage extends Component {
                       ),
                     }}
                   />
+                  <Button href={this.state.fileUrl} color="secondary">
+                    {this.state.fileName}
+                    <Icon style={{marginLeft: "5px"}}>cloud_download</Icon>
+                  </Button>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -397,6 +431,7 @@ class AuthPage extends Component {
                       ),
                     }}
                   />
+                <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}}/>
                 </Grid>
             </Grid>
             <div className={classes.buttons}>
@@ -419,12 +454,14 @@ function mapState(state) {
         types: state.types.items,
         tags: state.tags.items,
         loading: state.sources.loading,
-        alert: state.alert
+        alert: state.alert,
+        source: state.sources.source
     };
 }
 
 const actionCreators = {
-  create: sourceActions.create
+  create: sourceActions.create,
+  getSlug: sourceActions.getSlug,
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(AuthPage);

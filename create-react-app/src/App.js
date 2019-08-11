@@ -45,6 +45,7 @@ class App extends Component {
               <Route exact path='/signup' component={ Signup } />
               <Route path="/create" component={CreatePage} />
               <Route path="/post/:slug" component={Blog} />
+              <Route path="/update/:slug" component={CreatePage} />
               {/*<Route path="/post/:slug" component={Blog} />
               <Route path="/search" component={Search} />
               <Route exact path='/signup' component={ Signup } />

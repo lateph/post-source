@@ -76,7 +76,7 @@ class AuthPage extends Component {
       return;
     }
     if (email && password) {
-      console.log(this.props.login(email, password));
+      this.props.login(email, password);
     }
   };
 

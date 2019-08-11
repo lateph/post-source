@@ -14,7 +14,6 @@ function search() {
         dispatch(request());
 
         const { tags, type } = getState().search
-        console.log("jos",tags)
         searchService.getAll({
             tags,
             type

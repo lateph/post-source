@@ -18,9 +18,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const BrandPicker = (props) => {
   const classes = useStyles();
-  console.log("props",props)
   function handleChange(_id){
-    // console.log(_id)
     props.add(_id)
   }
   return (

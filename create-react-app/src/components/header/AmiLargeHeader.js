@@ -73,7 +73,6 @@ const AmiLargeHeader = (props) => {
     props.logout()
   }
 
-  console.log(props)
   
   return (
     <>

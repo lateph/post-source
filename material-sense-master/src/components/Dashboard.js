@@ -151,7 +151,6 @@ class Dashboard extends Component {
 
     fetcher(requestBody)
       .then(resData => {
-        console.log("type", resData)
         this.setState({ types: resData.data.types, tags: resData.data.tags, isLoading: false, source: resData.data.sourceSlug  });
 
         // const events = resData.data.events;
@@ -160,7 +159,6 @@ class Dashboard extends Component {
         // }
       })
       .catch(err => {
-        console.log(err);
         if (this.isActive) {
           this.setState({ isLoading: false });
         }

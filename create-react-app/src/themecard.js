@@ -49,6 +49,7 @@
             // transform: 'translateY(-3px)',
             // boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)',
           },
+          
           '& .MuiCardMedia-root': {
             paddingTop: '56.25%',
             position: 'relative',
@@ -101,13 +102,20 @@
           },
           '& .MuiCardContent-root': {
             textAlign: 'left',
-            padding: spacing(3),
+            padding: spacing(3, 3, 1 , 3),
+          },
+          '& .MuiChip-root': {
+            marginRight: "4px",
+            marginTop: "8px",
           },
           '& .MuiTypography--heading': {
             fontWeight: 'bold',
           },
           '& .MuiTypography--subheading': {
             lineHeight: 1.8,
+          },
+          '& .MuiAvatar-root': {
+            backgroundColor: palette.secondary.main
           },
           '& .MuiCardActions-root': {
             padding: spacing(0, 3, 3),

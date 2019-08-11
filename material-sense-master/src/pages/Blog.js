@@ -113,7 +113,6 @@ class Dashboard extends Component {
         // }
       })
       .catch(err => {
-        console.log(err);
         if (this.isActive) {
           this.setState({ isLoading: false });
         }

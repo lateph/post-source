@@ -12,7 +12,6 @@ function getAll() {
 
         tagService.getAll()
             .then((tags) => {
-                console.log("sempak",tags)
                 dispatch(success(tags))
             })
     };

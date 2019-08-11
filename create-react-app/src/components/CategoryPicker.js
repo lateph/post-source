@@ -9,7 +9,6 @@ import { searchActions } from '../_actions';
 
 const CategoryPicker = (props) => {
   function handleChange(_id){
-    // console.log(_id)
     props.add(_id)
   }
   return (

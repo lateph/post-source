@@ -89,7 +89,6 @@ function register({ email, password, firstName, lastName }) {
         })
         .then(resData => {
           let errors = resData.data.createUser.errors
-          console.log('errors', errors)
           if(errors !== null && errors){
             throw errors
           }

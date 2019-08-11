@@ -10,46 +10,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label,
-}));
-
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -272,16 +232,16 @@ const components = {
 export default function Autocomplete(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [single, setSingle] = React.useState(null);
-  const [multi, setMulti] = React.useState(null);
+
+  const [multi, setMulti] = React.useState([...props.valuex]);
+  React.useEffect(() => {
+    setMulti(props.valuex);
+  }, [props.valuex])
+ 
   const options = props.options.map(o => ({
     value: o._id,
     label: o.name,
   }))
-
-  function handleChangeSingle(value) {
-    setSingle(value);
-  }
 
   function handleChangeMulti(value) {
     props.onChange(value);

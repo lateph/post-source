@@ -20,7 +20,7 @@ function create(source) {
                     dispatch(success());
                     dispatch(tagActions.getAll());
                     dispatch(typeActions.getAll());
-                    history.push('/');
+                    history.push(`/post/${source.slug}`);
                 },
                 error => {
                     dispatch(failure(error));
@@ -38,22 +38,22 @@ function getSlug(slug) {
     return dispatch => {
         dispatch(request());
 
-        sourceService.find({slug})
+        return sourceService.find({slug})
             .then(
-                source => { 
+                source => {
                     dispatch(success(source));
-                    dispatch(tagActions.getAll());
-                    dispatch(typeActions.getAll());
-                    history.push('/');
+                    return source
+                    // history.push('/');
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    // dispatch(alertActions.error(error));
+                    return error
                 }
             );
     };
 
-    function request() { return { type: sourceConstants.SOURCES_REQUEST } }
-    function success(source) { return { type: sourceConstants.SOURCES_SUCCESS, source } }
-    function failure(error) { return { type: sourceConstants.SOURCES_FAILURE, error } }
+    function request() { return { type: sourceConstants.GET_SLUG_REQUEST } }
+    function success(source) { return { type: sourceConstants.GET_SLUG_SUCCESS, source } }
+    function failure(error) { return { type: sourceConstants.GET_SLUG_FAILURE, error } }
 }
