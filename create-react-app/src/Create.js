@@ -155,7 +155,7 @@ class AuthPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.match && this.props.match.params && this.props.match.params){
+    if(this.props.match && this.props.match.params && this.props.match.params.slug){
       this.props.getSlug(this.props.match.params.slug).then(ad => {
         const blocksFromHTML = convertFromHTML(ad.desc)
         const content = ContentState.createFromBlockArray(blocksFromHTML)
@@ -170,7 +170,7 @@ class AuthPage extends Component {
           thumbName: ad.thumb,
           fileUrl: ad.fileUrl,
           fileName: ad.file,
-          state: true,
+          update: true,
           tags: ad.tags.map(t => {
             return {
               label: t.name,
@@ -257,7 +257,7 @@ class AuthPage extends Component {
     const { classes } = this.props;
     const { editorState } = this.state;
     // const message = {}
-    const message = this.props.alert.formMessage ? this.props.alert.formMessage.errors : {}
+    const message = this.props.errors
     
     return (
       <React.Fragment>
@@ -267,7 +267,7 @@ class AuthPage extends Component {
           <Container component="main" maxWidth="md">
             <Paper className={classes.paper}>
             <Typography variant="h6" gutterBottom>
-                Add Blog
+                { !this.state.update ? "Add Article" : "Update Article"}
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
@@ -454,7 +454,7 @@ function mapState(state) {
         types: state.types.items,
         tags: state.tags.items,
         loading: state.sources.loading,
-        alert: state.alert,
+        errors: state.sources.errors,
         source: state.sources.source
     };
 }

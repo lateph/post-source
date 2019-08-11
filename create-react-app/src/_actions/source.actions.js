@@ -14,7 +14,7 @@ function create(source) {
     return dispatch => {
         dispatch(request(source));
 
-        sourceService.create(source)
+        return sourceService.create(source)
             .then(
                 source => { 
                     dispatch(success());
@@ -23,15 +23,16 @@ function create(source) {
                     history.push(`/post/${source.slug}`);
                 },
                 error => {
-                    dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    console.log("jancok",error)
+                    dispatch(failure(error.errors));
+                    // dispatch(alertActions.error(error));
                 }
             );
     };
 
     function request(source) { return { type: sourceConstants.SOURCES_REQUEST, source } }
     function success(source) { return { type: sourceConstants.SOURCES_SUCCESS, source } }
-    function failure(error) { return { type: sourceConstants.SOURCES_FAILURE, error } }
+    function failure(errors) { return { type: sourceConstants.SOURCES_FAILURE, errors } }
 }
 
 function getSlug(slug) {
@@ -55,5 +56,5 @@ function getSlug(slug) {
 
     function request() { return { type: sourceConstants.GET_SLUG_REQUEST } }
     function success(source) { return { type: sourceConstants.GET_SLUG_SUCCESS, source } }
-    function failure(error) { return { type: sourceConstants.GET_SLUG_FAILURE, error } }
+    function failure(errors) { return { type: sourceConstants.GET_SLUG_FAILURE, errors } }
 }

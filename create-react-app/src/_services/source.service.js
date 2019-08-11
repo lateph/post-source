@@ -42,7 +42,7 @@ async function create({ title, shortDesc, editorState, category, type, tags, fil
       }
     }
     
-    if(update){
+    if(!update){
       return await fetcher('sources',params, {})
     }
     else{
