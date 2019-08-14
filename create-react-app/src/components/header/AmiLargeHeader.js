@@ -135,7 +135,8 @@ const AmiLargeHeader = (props) => {
                         <MenuItem onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>]
                          : 
                         [
-                          <MenuItem onClick={handleClose} component={Link}  to="/create">Create</MenuItem>,
+                          <MenuItem onClick={handleClose} component={Link}  to="/create">Create Article</MenuItem>,
+                          <MenuItem onClick={handleClose} component={Link}  to="/profile">Profile</MenuItem>,
                           <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         ] 
                       }
@@ -168,7 +169,7 @@ const AmiLargeHeader = (props) => {
         <Toolbar>
           <MegaMenu
             menus={props.types.map(type => {
-              return { label: type.name }
+              return { label: type.name, _id: type._id }
             })}
           />
         </Toolbar>

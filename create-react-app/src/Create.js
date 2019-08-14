@@ -21,7 +21,6 @@ import Radio from '@material-ui/core/Radio';
 import Grid from '@material-ui/core/Grid';
 import { emphasize } from '@material-ui/core/styles';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -253,7 +252,6 @@ class AuthPage extends Component {
   }
 
   render() {
-    const currentPath = this.props.location.pathname
     const { classes } = this.props;
     const { editorState } = this.state;
     // const message = {}
@@ -431,7 +429,7 @@ class AuthPage extends Component {
                       ),
                     }}
                   />
-                <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}}/>
+                <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}} alt={this.state.thumb}/>
                 </Grid>
             </Grid>
             <div className={classes.buttons}>

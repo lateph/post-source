@@ -4,6 +4,8 @@ import { stat } from 'fs';
 export function search(state = {
   loading: false,
   count: 0,
+  page: 0,
+  perPage: 9,
   tags: [],
   type: "",
   sources: []
@@ -39,6 +41,16 @@ export function search(state = {
       return {
         ...state,
         type: action._id == state.type ? '' : action._id
+      };
+    case searchConstants.CHANGE_PAGE:
+      return {
+        ...state,
+        page: action.page
+      };
+    case searchConstants.CHANGE_PER_PAGE:
+      return {
+        ...state,
+        perPage: action.perPage
       };
     default:
       return state

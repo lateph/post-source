@@ -1,4 +1,3 @@
-import { authHeader } from '../_helpers';
 import fetcher from './fetcherRest';
 import fetcherQL from './fetcher';
 import draftToHtml from 'draftjs-to-html';

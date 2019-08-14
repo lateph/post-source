@@ -1,5 +1,6 @@
 import { searchConstants } from '../_constants';
 import { searchService } from '../_services';
+import { fail } from 'assert';
 
 export const searchActions = {
     search,
@@ -20,6 +21,8 @@ function search() {
         })
             .then((data) => {
                 dispatch(success(data))
+            }).catch(e => {
+                failure(e)
             })
     };
 
@@ -32,6 +35,22 @@ function addTag(_id) {
     return dispatch => {
 
         dispatch({ type: searchConstants.ADD_TAG, _id });
+        dispatch(search())
+    };
+}
+
+function changePage(page) {
+    return dispatch => {
+
+        dispatch({ type: searchConstants.CHANGE_PAGE, page });
+        dispatch(search())
+    };
+}
+
+function changePerPage(perPage) {
+    return dispatch => {
+
+        dispatch({ type: searchConstants.CHANGE_PER_PAGE, perPage });
         dispatch(search())
     };
 }

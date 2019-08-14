@@ -1,5 +1,5 @@
 import { userConstants } from '../_constants';
-import { userService } from '../_services';
+import { userService, searchService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
 
@@ -8,12 +8,92 @@ export const userActions = {
     logout,
     register,
     getAll,
+    getProfile,
+    getListArticle,
+    updateProfile,
     delete: _delete
 };
 
+function getListArticle() {
+    return (dispatch, getState) => {
+
+        dispatch(request());
+
+        // const { tags, type } = getState().search
+        const { userId } = getState().authentication.user
+
+        searchService.getAll({
+            userId
+            // tags,
+            // type
+        })
+            .then((data) => {
+                console.log("jancok1", data)
+                dispatch(success(data))
+            }).catch((data) => {
+                failure(data)
+            })
+    };
+
+    function request() { return { type: userConstants.GET_LIST_ARTICLE_REQUEST } }
+    function success(listArticle) { return { type: userConstants.GET_LIST_ARTICLE_SUCCESS, listArticle } }
+    function failure(error) { return { type: userConstants.GET_LIST_ARTICLE_FAILURE, error } }
+}
+
+function getProfile() {
+    return (dispatch, getState)  => {
+        dispatch(request());
+
+        const { userId } = getState().authentication.user
+
+        return userService.getProfile(userId)
+            .then(
+                source => {
+                    dispatch(success(source));
+                    return source
+                    // history.push('/');
+                },
+                error => {
+                    dispatch(failure(error));
+                    // dispatch(alertActions.error(error));
+                    return error
+                }
+            );
+    };
+
+    function request() { return { type: userConstants.GET_REQUEST } }
+    function success(source) { return { type: userConstants.GET_SUCCESS, source } }
+    function failure(errors) { return { type: userConstants.GET_FAILURE, errors } }
+}
+
+function updateProfile(user){
+    return (dispatch, getState) => {
+        dispatch(request(user));
+
+        const { userId } = getState().authentication.user
+
+        return userService.updateProfile(userId, user)
+            .then(
+                user => { 
+                    dispatch(success());
+                    // history.push(`/post/${user.slug}`);
+                },
+                error => {
+                    // console.log("jancok",error)
+                    dispatch(failure(error.errors));
+                    // dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: userConstants.GET_REQUEST } }
+    function success(user) { return { type: userConstants.GET_SUCCESS, user } }
+    function failure(errors) { return { type: userConstants.GET_FAILURE, errors } }
+}
+
 function login(username, password) {
     return dispatch => {
-        // dispatch(request({ username }));
+        dispatch(request());
 
         userService.login(username, password)
             .then(
@@ -28,8 +108,8 @@ function login(username, password) {
             );
     };
 
-    // function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+    function request() { return { type: userConstants.LOGIN_REQUEST } }
+    function success({ token }) { return { type: userConstants.LOGIN_SUCCESS, token } }
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
@@ -58,7 +138,7 @@ function register(user) {
     };
 
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
-    function successLogin(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+    function successLogin({token}) { return { type: userConstants.LOGIN_SUCCESS, token } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
 }

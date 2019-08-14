@@ -31,6 +31,7 @@ type Source {
 input SourceFilter {
   type: String
   category: String
+  creator: String
   tags: [String]
 }
 

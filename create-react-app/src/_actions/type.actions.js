@@ -17,5 +17,5 @@ function getAll() {
 
     function request() { return { type: typeConstants.GETALL_REQUEST } }
     function success(types) { return { type: typeConstants.GETALL_SUCCESS, types } }
-    function failure(error) { return { type: typeConstants.GETALL_FAILURE, error } }
+    // function failure(error) { return { type: typeConstants.GETALL_FAILURE, error } }
 }

@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import Collapse from '@material-ui/core/Collapse';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
+// import Collapse from '@material-ui/core/Collapse';
+// import Container from '@material-ui/core/Container';
+// import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+// import Grid from '@material-ui/core/Grid';
+// import List from '@material-ui/core/List';
+// import ListSubheader from '@material-ui/core/ListSubheader';
+// import ListItem from '@material-ui/core/ListItem';
+// import ListItemText from '@material-ui/core/ListItemText';
+import { Link } from 'react-router-dom';
+import queryString from 'query-string';
+import { searchActions } from '../_actions';
+import { connect } from 'react-redux'
+import _ from 'lodash';
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {
@@ -53,11 +58,22 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const MegaMenu = ({ menus, subMenus, cover }) => {
-  const [tabIndex, setTabIndex] = useState(false);
+const MegaMenu = ({ menus, type, add}) => {
+  const index  = _.findIndex(menus, (m) => {
+    return m._id == type
+  })
+  console.log(index, type, menus)
+  const [tabIndex, setTabIndex] = useState(index);
+  React.useEffect(() => {
+    setTabIndex(index);
+  }, [index])
   const classes = useStyles();
+  console.log("kepet", menus)
+  function header(_id){
+    add(_id)    
+  }
   return (
-    <div className={classes.root} onMouseLeave={() => setTabIndex(false)}>
+    <div className={classes.root} onMouseLeave={() => setTabIndex(index)}>
       <Tabs
         centered
         classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
@@ -65,6 +81,10 @@ const MegaMenu = ({ menus, subMenus, cover }) => {
       >
         {menus.map((item, index) => (
           <Tab
+            component={Link}
+            onClick={() => header(item._id)}
+            to={{pathname: "/", 
+            search: queryString.stringify({ c: item._id}), state: "loadBlogs" }} 
             key={item.label}
             {...item}
             className={classes.tab}
@@ -125,4 +145,21 @@ MegaMenu.defaultProps = {
     'https://images.unsplash.com/photo-1470468969717-61d5d54fd036?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=983&q=80',
 };
 
-export default MegaMenu;
+
+
+function mapState(state) {
+  // const { items } = state.types;
+  const { type } = state.search;
+  return { 
+    // items,
+    type
+  };
+}
+
+const actionCreators = {
+  add: searchActions.addType
+};
+
+const connectedLoginPage = connect(mapState, actionCreators)(MegaMenu);
+
+export default connectedLoginPage;

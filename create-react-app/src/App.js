@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import AuthContext from './context/auth-context';
 import { BrowserRouter, Route, Redirect, Router } from 'react-router-dom';
 import HomePage from './AmigoHome'
+import Profile from './Profile'
 import LoginPage from './Login'
 import CreatePage from './Create'
 import { history } from './_helpers';
@@ -41,8 +42,9 @@ class App extends Component {
               {/* {this.state.token && <Redirect from="/login" to="/" />} */}
               {/* {this.state.token && <Redirect from="/signup" to="/" />} */}
               <Route exact path="/" component={HomePage} />
-              <Route path="/login" component={LoginPage} />
+              <Route path="/login" component={LoginPage} />              
               <Route exact path='/signup' component={ Signup } />
+              <Route exact path='/profile' component={ Profile } />
               <Route path="/create" component={CreatePage} />
               <Route path="/post/:slug" component={Blog} />
               <Route path="/update/:slug" component={CreatePage} />

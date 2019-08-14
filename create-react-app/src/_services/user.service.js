@@ -1,4 +1,5 @@
 import { authHeader } from '../_helpers';
+import fetcher from './fetcherRest';
 
 export const userService = {
     login,
@@ -7,6 +8,8 @@ export const userService = {
     getAll,
     getById,
     update,
+    getProfile,
+    updateProfile,
     delete: _delete
 };
 
@@ -102,6 +105,25 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
+
+function getProfile(userId){
+  // const userId = localStorage.getItem('user');
+  return fetcher(`users/${userId}`,{}, {
+    method: 'GET'
+  })
+}
+
+
+function updateProfile(userId, {firstName, lastName}){
+  // const userId = localStorage.getItem('user');
+  return fetcher(`users/${userId}`,{
+    firstName,
+    lastName
+  }, {
+    method: 'PATCH'
+  })
+}
+
 
 function getAll() {
     const requestOptions = {

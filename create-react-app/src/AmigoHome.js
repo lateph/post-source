@@ -25,10 +25,34 @@ import TwitterButton from './components/TwitterButton';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { searchActions } from './_actions';
+import queryString from 'query-string';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class Dashboard extends Component {
   componentDidMount() {
-    this.props.search()
+    const v = queryString.parse(this.props.location.search)
+    console.log(v)
+    if(v && v.c){
+      this.props.add(v.c)
+    }
+    else{
+      this.props.search()
+    }
   }
+  // componentWillReceiveProps(nextProps){
+  //   console.log(nextProps)
+  //   const v = queryString.parse(nextProps.location.search)
+  //   console.log(v)
+
+  //   if (nextProps.location.state === 'loadBlogs') {
+  //     this.setState({
+  //       t: v.t,
+  //       c: v.c,
+  //       page: 0
+  //     }, () => this.fetchBlog());
+  //   }
+  // }
+
   render() {
     return (
       <>
@@ -85,7 +109,7 @@ class Dashboard extends Component {
                 }}
               >
                 <Paper style={{ boxShadow: '0 2px 12px 0 rgba(0,0,0,0.12)' }}>
-                  <Grid container>
+                  {/* <Grid container>
                     <Grid item xs={12} sm={6} md={5}>
                       <ProductAds
                         {...ProductAds.test1}
@@ -103,7 +127,7 @@ class Dashboard extends Component {
                   </Grid>
                   <Hidden only={'xs'}>
                     <Box pt={2} pb={3} />
-                  </Hidden>
+                  </Hidden> */}
                   <Hidden smUp>
                     <MobileSelector />
                   </Hidden>
@@ -139,19 +163,39 @@ class Dashboard extends Component {
                     </Hidden>
                     <Grid item xs={12} sm={8} md={9}>
                       <Grid container>
+                        {this.props.sources.length == 0 &&  <div style={{width: "100%", height: "200px", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                          <Typography component="p">
+                            No Data
+                          </Typography>
+                        </div>}
                         {this.props.sources.map(data => (
                           <Grid key={data._id} item xs={6} sm={6} md={4}>
                             <ProductCard source={data} bordered />
                           </Grid>
                         ))}
                       </Grid>
-                      <Pagination
+                      <TablePagination
+                        rowsPerPageOptions={[9, 18, 32]}
+                        component="div"
+                        count={this.props.count}
+                        rowsPerPage={this.props.perPage}
+                        page={this.props.page}
+                        backIconButtonProps={{
+                          'aria-label': 'Previous Page',
+                        }}
+                        nextIconButtonProps={{
+                          'aria-label': 'Next Page',
+                        }}
+                        onChangePage={this.props.changePage}
+                        onChangeRowsPerPage={this.props.changePerPage}
+                      />
+                      {/* <Pagination
                         rootBoxProps={{
                           mt: '20px',
                           ml: '20px',
                           borderLeft: '1px solid #f0f0f0',
                         }}
-                      />
+                      /> */}
                     </Grid>
                   </Grid>
                 </Paper>
@@ -199,13 +243,18 @@ function mapState(state) {
   return { 
       sources: state.search.sources,
       count: state.search.count,
+      perPage: state.search.perPage,
+      page: state.search.page,
       // loading: state.sources.loading,
       // alert: state.alert
   };
 }
 
 const actionCreators = {
-  search: searchActions.search
+  search: searchActions.search,
+  add: searchActions.addType,
+  changePage: searchActions.changePage,
+  changePerPage: searchActions.changePage,
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(Dashboard);
