@@ -5,7 +5,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 // import AuthContext from '../context/auth-context';
 import { withRouter } from 'react-router-dom'
 import withStyles from '@material-ui/styles/withStyles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 // import Topbar from '../components/Topbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -196,9 +195,7 @@ class AuthPage extends Component {
   }
 
   render() {
-    const currentPath = this.props.location.pathname
     const { classes } = this.props;
-    const { editorState } = this.state;
     // const message = {}
     const message = this.props.errors
     
@@ -279,7 +276,7 @@ class AuthPage extends Component {
                   ),
                 }}
               />
-            <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}}/>
+            <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}} alt=""/>
             </Grid>
         </Grid>
         <div className={classes.buttons}>

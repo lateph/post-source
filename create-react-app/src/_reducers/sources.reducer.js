@@ -1,7 +1,7 @@
 import { sourceConstants } from '../_constants';
 
 export function sources(state = {
-  loading: true,
+  loading: false,
   source: false,
   errors: []
 }, action) {

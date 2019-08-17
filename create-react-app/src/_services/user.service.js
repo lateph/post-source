@@ -37,11 +37,11 @@ function login(email, password) {
           'Content-Type': 'application/json'
         }
     })
-        .then(res => {
+        .then(async res => {
             if (res.status !== 200 && res.status !== 201) {
-                throw new Error('Failed!');
+                throw await res.json();
             }
-            return res.json();
+            return await res.json();
         })
         .then(resData => {
             localStorage.setItem('user', JSON.stringify(resData.data.login.token));

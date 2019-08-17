@@ -33,6 +33,7 @@ input SourceFilter {
   category: String
   creator: String
   tags: [String]
+  q: String
 }
 
 input SourceInput {

@@ -5,11 +5,11 @@ export const searchService = {
     getAll,
 };
 
-function getAll({tags, type, userId}) {
+function getAll({tags, type, userId, perPage, page, q}) {
     const requestBody = {
         query: `
-          query CreateUser($t: [String], $c: String, $u: String, $skip: Int, $limit: Int){
-            sources(filter: {tags: $t, type: $c, creator: $u}, pagination: {skip: $skip, limit: $limit}){
+          query CreateUser($t: [String], $c: String, $u: String, $skip: Int, $limit: Int, $q: String){
+            sources(filter: {tags: $t, type: $c, creator: $u, q: $q}, pagination: {skip: $skip, limit: $limit}){
               _id
               title
               shortDesc
@@ -22,17 +22,18 @@ function getAll({tags, type, userId}) {
                 lastName
               }
             }
-            countSources(filter: {tags: $t, type: $c, creator: $u})
+            countSources(filter: {tags: $t, type: $c, creator: $u, q: $q})
           }
           `,
           variables: {
             ..._.omitBy({
               t: tags,
               c: type,
-              u: userId
+              u: userId,
+              q: q
             }, _.isEmpty),
-            // skip: this.state.page*this.state.perPage,
-            // limit: this.state.perPage,
+            skip: page*perPage,
+            limit: perPage,
           }
       };
   

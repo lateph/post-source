@@ -13,11 +13,14 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Container from '@material-ui/core/Container';
 import { userActions } from './_actions';
 import AmiLargeHeader from './components/header';
+import MySnackbarContentWrapper from './components/MySnackbarContentWrapper';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import { connect } from 'react-redux';
 const backgroundShape = require('./images/shape.svg');
@@ -59,13 +62,16 @@ class AuthPage extends Component {
     isLogin: true,
     email: "",
     password: "",
-    isLoading: false
+    isLoading: false,
+    open:false,
+    error: ""
   };
 
   static contextType = AuthContext;
 
   constructor(props) {
     super(props);
+    this.handleClose = this.handleClose.bind(this)
   }
 
   submitHandler = event => {
@@ -76,7 +82,13 @@ class AuthPage extends Component {
       return;
     }
     if (email && password) {
-      this.props.login(email, password);
+      this.props.login(email, password).then(() => {
+      }).catch((e) => {
+        this.setState({
+          open: true,
+          error: e.errors ? e.errors[0].message : "Login Failed"
+        })
+      });
     }
   };
 
@@ -84,15 +96,40 @@ class AuthPage extends Component {
     this.setState({[event.target.id]: event.target.value});
   }
 
+  handleClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({
+      open: false
+    })
+  }
+
+
+
   render() {
-    const currentPath = this.props.location.pathname
     const { classes } = this.props;
 
     return (
       <React.Fragment>
         <CssBaseline />
         <AmiLargeHeader />
-
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+        >
+          <MySnackbarContentWrapper
+            onClose={this.handleClose}
+            variant="error"
+            message={this.state.error}
+          />
+        </Snackbar>
         <div className={classes.root}>
         <Container component="main" maxWidth="xs">
           <div className={classes.paper}>
@@ -147,7 +184,7 @@ class AuthPage extends Component {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link to={'/signup'} component={RouterLink} variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

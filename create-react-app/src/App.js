@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Typography from './components/extensions/Typography';
 import { Helmet } from 'react-helmet';
-import AuthContext from './context/auth-context';
 import { BrowserRouter, Route, Redirect, Router } from 'react-router-dom';
 import HomePage from './AmigoHome'
 import Profile from './Profile'
@@ -22,9 +21,6 @@ const url =
 
 
 class App extends Component {
-  constructor(props){
-    super(props);
-  }
 
   componentDidMount() {
     this.props.getTypes()
@@ -39,7 +35,8 @@ class App extends Component {
             <link href={url} rel="stylesheet" />
           </Helmet>
           <Router history={history}>
-              {/* {this.state.token && <Redirect from="/login" to="/" />} */}
+              {/* {this.props.loggedIn === false && <Redirect from="/create" to="/login" />} */}
+              {/* {this.props.loggedIn === false && <Redirect from="/update" to="/login" />} */}
               {/* {this.state.token && <Redirect from="/signup" to="/" />} */}
               <Route exact path="/" component={HomePage} />
               <Route path="/login" component={LoginPage} />              
@@ -62,13 +59,14 @@ class App extends Component {
 
 
 function mapState(state) {
-  const { loggingIn } = state.authentication;
-  return { loggingIn };
+  const { loggedIn } = state.authentication;
+
+  return { loggedIn };
 }
 
 const actionCreators = {
   getTypes: typeActions.getAll,
-  getTags: tagActions.getAll
+  getTags: tagActions.getAll,
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(App);

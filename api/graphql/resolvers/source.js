@@ -10,14 +10,21 @@ const { transformSource } = require('./merge');
 module.exports = {
   sources: async (args) => {
     try {
+      let filter = {
+        ...args.filter
+      }
       if(args.filter.tags){
         if(Array.isArray(args.filter.tags)) {
-          args.filter.tags = {$in: args.filter.tags};
+          filter.tags = {$in: args.filter.tags};
         } else {
-          args.filter.tags = args.filter.tags;
+          filter.tags = args.filter.tags;
         }
       }
-      const sources = await Source.find(args.filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
+      if(args.filter.q){
+        filter.$text = {$search: args.filter.q}
+        delete filter.q
+      }
+      const sources = await Source.find(filter).skip(args.pagination.skip).limit(args.pagination.limit).exec();
       return sources.map(source => {
         return transformSource(source);
       });
@@ -27,7 +34,21 @@ module.exports = {
   },
   countSources: async (args) => {
     try {
-      return Source.count(args.filter)
+      let filter = {
+        ...args.filter
+      }
+      if(args.filter.tags){
+        if(Array.isArray(args.filter.tags)) {
+          filter.tags = {$in: args.filter.tags};
+        } else {
+          filter.tags = args.filter.tags;
+        }
+      }
+      if(args.filter.q){
+        filter.$text = {$search: args.filter.q}
+        delete filter.q
+      }
+      return Source.count(filter)
     } catch (err) {
       throw err;
     }

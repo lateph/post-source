@@ -1,5 +1,4 @@
 import { searchConstants } from '../_constants';
-import { stat } from 'fs';
 
 export function search(state = {
   loading: false,
@@ -8,7 +7,8 @@ export function search(state = {
   perPage: 9,
   tags: [],
   type: "",
-  sources: []
+  sources: [],
+  q: ""
 }, action) {
   switch (action.type) {
     case searchConstants.GETALL_REQUEST:
@@ -40,7 +40,12 @@ export function search(state = {
     case searchConstants.ADD_TYPE:
       return {
         ...state,
-        type: action._id == state.type ? '' : action._id
+        type: action._id === state.type ? '' : action._id
+      };
+    case searchConstants.ADD_SEARCH:
+      return {
+        ...state,
+        q: action.q
       };
     case searchConstants.CHANGE_PAGE:
       return {

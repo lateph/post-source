@@ -18,5 +18,5 @@ function getAll() {
 
     function request() { return { type: tagConstants.GETALL_REQUEST } }
     function success(tags) { return { type: tagConstants.GETALL_SUCCESS, tags } }
-    function failure(error) { return { type: tagConstants.GETALL_FAILURE, error } }
+    // function failure(error) { return { type: tagConstants.GETALL_FAILURE, error } }
 }

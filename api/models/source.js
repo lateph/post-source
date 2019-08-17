@@ -43,5 +43,7 @@ const sourceSchema = new Schema({
   },
 }, 
 { timestamps: true});
+sourceSchema.index({'$**': 'text'});
+
 
 module.exports = mongoose.model('sources', sourceSchema);

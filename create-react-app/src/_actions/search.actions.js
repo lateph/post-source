@@ -1,11 +1,13 @@
 import { searchConstants } from '../_constants';
 import { searchService } from '../_services';
-import { fail } from 'assert';
 
 export const searchActions = {
     search,
     addTag,
     addType,
+    addSearch,
+    changePage,
+    changePerPage,
     // setType,
 };
 
@@ -14,10 +16,13 @@ function search() {
 
         dispatch(request());
 
-        const { tags, type } = getState().search
+        const { tags, type, perPage, page, q } = getState().search
         searchService.getAll({
             tags,
-            type
+            type,
+            perPage,
+            page,
+            q
         })
             .then((data) => {
                 dispatch(success(data))
@@ -39,6 +44,14 @@ function addTag(_id) {
     };
 }
 
+function addSearch(q) {
+    return dispatch => {
+
+        dispatch({ type: searchConstants.ADD_SEARCH, q });
+        dispatch(search())
+    };
+}
+
 function changePage(page) {
     return dispatch => {
 
@@ -55,11 +68,13 @@ function changePerPage(perPage) {
     };
 }
 
-function addType(_id) {
+function addType(_id, apply=true) {
     return dispatch => {
 
         dispatch({ type: searchConstants.ADD_TYPE, _id });
-        dispatch(search())
+        if(apply){
+            dispatch(search())
+        }
     };
 }
 

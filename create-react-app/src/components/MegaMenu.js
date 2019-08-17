@@ -58,22 +58,24 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const MegaMenu = ({ menus, type, add}) => {
+const MegaMenu = ({ menus, type, add, history}) => {
   const index  = _.findIndex(menus, (m) => {
-    return m._id == type
+    return m._id === type
   })
-  console.log(index, type, menus)
-  const [tabIndex, setTabIndex] = useState(index);
+  const defIndex = index === -1 ? false : index
+  const [tabIndex, setTabIndex] = useState(defIndex);
   React.useEffect(() => {
-    setTabIndex(index);
-  }, [index])
+    setTabIndex(defIndex);
+  }, [defIndex])
   const classes = useStyles();
-  console.log("kepet", menus)
   function header(_id){
-    add(_id)    
+    console.log(history)
+    if(history.location.pathname === '/'){
+      add(_id)
+    }
   }
   return (
-    <div className={classes.root} onMouseLeave={() => setTabIndex(index)}>
+    <div className={classes.root} onMouseLeave={() => setTabIndex(defIndex)}>
       <Tabs
         centered
         classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}

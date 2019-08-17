@@ -95,7 +95,7 @@ function login(username, password) {
     return dispatch => {
         dispatch(request());
 
-        userService.login(username, password)
+        return userService.login(username, password)
             .then(
                 user => { 
                     dispatch(success(user));
@@ -104,6 +104,7 @@ function login(username, password) {
                 error => {
                     dispatch(failure(error));
                     dispatch(alertActions.error(error));
+                    throw error
                 }
             );
     };

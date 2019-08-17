@@ -1,6 +1,5 @@
 import React,  { Component }  from 'react';
 // import PropTypes from 'prop-types';
-import { ThemeProvider } from '@material-ui/styles';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -10,15 +9,6 @@ import Divider from '@material-ui/core/Divider';
 import Hidden from '@material-ui/core/Hidden';
 import Typography from './components/extensions/Typography';
 import AmiLargeHeader from './components/header';
-import ProductAds from './components/ProductAds';
-import ProductCard from './components/ProductCard';
-import Expander from './components/Expander';
-import CategoryPicker from './components/CategoryPicker';
-import PricePicker from './components/PricePicker';
-import BrandPicker from './components/BrandPicker';
-import ColorPicker from './components/ColorPicker';
-import SizePicker from './components/SizePicker';
-import Pagination from './components/Pagination';
 import EmailInput from './components/EmailInput';
 import MobileSelector from './components/MobileSelector';
 import TwitterButton from './components/TwitterButton';
@@ -26,7 +16,6 @@ import PostCard01 from './components/PostCard01';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { sourceActions } from './_actions';
-import renderHTML from 'react-render-html';
 import Parser from 'html-react-parser';
 
 class Dashboard extends Component {

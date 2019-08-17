@@ -1,6 +1,5 @@
 import React,  { Component }  from 'react';
 // import PropTypes from 'prop-types';
-import { ThemeProvider } from '@material-ui/styles';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -10,15 +9,10 @@ import Divider from '@material-ui/core/Divider';
 import Hidden from '@material-ui/core/Hidden';
 import Typography from './components/extensions/Typography';
 import AmiLargeHeader from './components/header';
-import ProductAds from './components/ProductAds';
 import ProductCard from './components/ProductCard';
 import Expander from './components/Expander';
 import CategoryPicker from './components/CategoryPicker';
-import PricePicker from './components/PricePicker';
 import BrandPicker from './components/BrandPicker';
-import ColorPicker from './components/ColorPicker';
-import SizePicker from './components/SizePicker';
-import Pagination from './components/Pagination';
 import EmailInput from './components/EmailInput';
 import MobileSelector from './components/MobileSelector';
 import TwitterButton from './components/TwitterButton';
@@ -31,25 +25,32 @@ import TablePagination from '@material-ui/core/TablePagination';
 class Dashboard extends Component {
   componentDidMount() {
     const v = queryString.parse(this.props.location.search)
-    console.log(v)
+    console.log("cuk",v)
     if(v && v.c){
       this.props.add(v.c)
+    }
+    else if(v && v.q){
+      this.props.addSearch(v.q)
     }
     else{
       this.props.search()
     }
   }
-  // componentWillReceiveProps(nextProps){
+  // componentDidUpdate(nextProps){
   //   console.log(nextProps)
   //   const v = queryString.parse(nextProps.location.search)
   //   console.log(v)
 
   //   if (nextProps.location.state === 'loadBlogs') {
-  //     this.setState({
-  //       t: v.t,
-  //       c: v.c,
-  //       page: 0
-  //     }, () => this.fetchBlog());
+  //     if(v.c){
+  //       this.props.add(v.c, false)
+  //     }
+  //     this.props.search()
+  //     // this.setState({
+  //     //   t: v.t,
+  //     //   c: v.c,
+  //     //   page: 0
+  //     // }, () => this.fetchBlog());
   //   }
   // }
 
@@ -87,7 +88,7 @@ class Dashboard extends Component {
                     <Typography>TOTAL 319 Source</Typography>
                 </Grid>
                 <Grid item xs style={{textAlign:"right"}}>
-                  <TwitterButton className={"default bottom"} variant={"outlined"} color={"secondary"} size={"large"}  component={Link}  to="/create">Create Article</TwitterButton>
+                  <TwitterButton className={"default bottom"} variant={"outlined"} color={"secondary"} size={"large"}  component={Link}  to="/create">Create</TwitterButton>
                 </Grid>
               </Grid>
             </Container>
@@ -163,7 +164,7 @@ class Dashboard extends Component {
                     </Hidden>
                     <Grid item xs={12} sm={8} md={9}>
                       <Grid container>
-                        {this.props.sources.length == 0 &&  <div style={{width: "100%", height: "200px", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        {this.props.sources.length === 0 &&  <div style={{width: "100%", height: "200px", display: "flex", justifyContent: "center", alignItems: "center"}}>
                           <Typography component="p">
                             No Data
                           </Typography>
@@ -175,7 +176,7 @@ class Dashboard extends Component {
                         ))}
                       </Grid>
                       <TablePagination
-                        rowsPerPageOptions={[9, 18, 32]}
+                        rowsPerPageOptions={[1, 9, 18, 32]}
                         component="div"
                         count={this.props.count}
                         rowsPerPage={this.props.perPage}
@@ -186,8 +187,8 @@ class Dashboard extends Component {
                         nextIconButtonProps={{
                           'aria-label': 'Next Page',
                         }}
-                        onChangePage={this.props.changePage}
-                        onChangeRowsPerPage={this.props.changePerPage}
+                        onChangePage={(e, newPage) => this.props.changePage(newPage)}
+                        onChangeRowsPerPage={(e) => this.props.changePerPage(e.target.value)}
                       />
                       {/* <Pagination
                         rootBoxProps={{
@@ -245,7 +246,7 @@ function mapState(state) {
       count: state.search.count,
       perPage: state.search.perPage,
       page: state.search.page,
-      // loading: state.sources.loading,
+      loading: state.search.loading,
       // alert: state.alert
   };
 }
@@ -253,8 +254,9 @@ function mapState(state) {
 const actionCreators = {
   search: searchActions.search,
   add: searchActions.addType,
+  addSearch: searchActions.addSearch,
   changePage: searchActions.changePage,
-  changePerPage: searchActions.changePage,
+  changePerPage: searchActions.changePerPage,
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(Dashboard);

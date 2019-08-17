@@ -35,6 +35,8 @@ import { connect } from 'react-redux'
 import { sourceActions } from './_actions';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
+import { Redirect } from 'react-router-dom';
+
 // import stateFromHrml from 'draft-js-import-html'
 const styles = theme => ({
   root: {
@@ -44,8 +46,8 @@ const styles = theme => ({
     backgroundSize: 'cover',
     backgroundPosition: '0 400px',
     marginTop: 10,
-    padding: 20,
-    paddingBottom: 500
+    // padding: 20,
+    paddingBottom: 500,
   },
   paper: {
     marginTop: theme.spacing(1),
@@ -54,7 +56,7 @@ const styles = theme => ({
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(6),
-      padding: theme.spacing(3),
+      // padding: theme.spacing(3),
     },
   },
   avatar: {
@@ -258,6 +260,7 @@ class AuthPage extends Component {
     const message = this.props.errors
     
     return (
+      this.props.loggedIn === false ?  <Redirect to="/login"/> :
       <React.Fragment>
         <CssBaseline />
         <AmiLargeHeader />
@@ -265,7 +268,7 @@ class AuthPage extends Component {
           <Container component="main" maxWidth="md">
             <Paper className={classes.paper}>
             <Typography variant="h6" gutterBottom>
-                { !this.state.update ? "Add Article" : "Update Article"}
+                { this.state.update && this.props.loggedIn && this.props.user.userId === this.state._id && "Update Article"}
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
@@ -397,10 +400,10 @@ class AuthPage extends Component {
                       ),
                     }}
                   />
-                  <Button href={this.state.fileUrl} color="secondary">
+                  { this.state.update && <Button href={this.state.fileUrl} color="secondary">
                     {this.state.fileName}
                     <Icon style={{marginLeft: "5px"}}>cloud_download</Icon>
-                  </Button>
+                  </Button> }
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -429,7 +432,7 @@ class AuthPage extends Component {
                       ),
                     }}
                   />
-                <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}} alt={this.state.thumb}/>
+                  {  this.state.update && <img src={this.state.thumbUrl} style={{maxHeight: '100px', maxWidth: '200px', marginTop: '10px'}} alt=""/> }
                 </Grid>
             </Grid>
             <div className={classes.buttons}>
@@ -448,13 +451,17 @@ class AuthPage extends Component {
 
 
 function mapState(state) {
-    return { 
-        types: state.types.items,
-        tags: state.tags.items,
-        loading: state.sources.loading,
-        errors: state.sources.errors,
-        source: state.sources.source
-    };
+  const { loggedIn, user } = state.authentication;
+  return { 
+      types: state.types.items,
+      tags: state.tags.items,
+      loading: state.sources.loading,
+      errors: state.sources.errors,
+      source: state.sources.source,
+      source: state.sources.source,
+      loggedIn,
+      user
+  };
 }
 
 const actionCreators = {

@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 import AmiLargeHeader from './components/header';
 import { userActions } from './_actions';
 import { connect } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 
 const styles = theme => ({
   root: {
@@ -63,11 +64,6 @@ class AuthPage extends Component {
     }
   };
 
-
-  constructor(props) {
-    super(props);
-  }
-
   submitHandler = event => {
     event.preventDefault();
 
@@ -79,7 +75,6 @@ class AuthPage extends Component {
   }
 
   render() {
-    const currentPath = this.props.location.pathname
     const { classes } = this.props;
     const message = this.props.message || {}
 
@@ -174,7 +169,7 @@ class AuthPage extends Component {
                 </Button>
                 <Grid container justify="flex-end">
                   <Grid item>
-                    <Link href="/login" variant="body2">
+                    <Link to="/login" component={RouterLink} variant="body2">
                         Already have an account? Sign in
                     </Link>
                   </Grid>

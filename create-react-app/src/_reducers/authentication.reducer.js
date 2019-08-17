@@ -16,7 +16,7 @@ function load(token){
   return parseJwt(token)
 }
 
-const initialState = user ? { loggedIn: true, user: load(user) } : {};
+const initialState = user ? { loggedIn: true, user: load(user) } : { loggedIn: false , user: {}};
 
 export function authentication(state = initialState, action) {
   switch (action.type) {

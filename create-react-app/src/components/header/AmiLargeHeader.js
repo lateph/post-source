@@ -13,8 +13,10 @@ import MegaMenu from '../MegaMenu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { Link } from 'react-router-dom';
-import { userActions } from '../../_actions';
+import { userActions, searchActions } from '../../_actions';
 import { connect } from 'react-redux'
+import { Link as RouterLink } from 'react-router-dom';
+import queryString from 'query-string';
 
 const useStyles = makeStyles(({ transitions }) => ({
   searchInput: ({ searchAppeared }) => ({
@@ -44,10 +46,12 @@ const useStyles = makeStyles(({ transitions }) => ({
 const AmiLargeHeader = (props) => {
   const trigger = useScrollTrigger();
   const inputRef = useRef(null);
-  const [searchAppeared, setSearchAppeared] = useState(false);
+  const defSA = !!props.q
+  const [search, setSearch] = useState(props.q);
+  const [searchAppeared, setSearchAppeared] = useState(defSA);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [auth, setAuth] = React.useState(true)
   const classes = useStyles({ searchAppeared, trigger });
+  
   const handleSearchClick = () => {
     setSearchAppeared(!searchAppeared);
     if (!searchAppeared && inputRef.current) {
@@ -55,14 +59,28 @@ const AmiLargeHeader = (props) => {
     }
   };
 
-  const open = Boolean(anchorEl);
-
-  function handleChange(event) {
-    setAuth(event.target.checked);
+  const handleChangeSearch = (x) => {
+    setSearch(x.target.value)
   }
+
+  const open = Boolean(anchorEl);
 
   function handleMenu(event) {
     setAnchorEl(event.currentTarget);
+  }
+
+  const handleKeyPress = (event) => {
+    // alert('asd')
+    // console.log(event)
+    if(event.key === 'Enter'){
+      console.log(props)
+      if(props.history.location.pathname === '/'){
+        props.addSearch(event.target.value)
+      }
+      const s = queryString.stringify({ q: event.target.value});
+      props.history.push(`/?${s}`);
+      console.log('enter press here! ')
+    }
   }
 
   function handleClose() {
@@ -82,14 +100,14 @@ const AmiLargeHeader = (props) => {
             <Grid container wrap={'nowrap'} alignItems={'center'}>
               <Grid item xs>
                 <Button
-                  icon={'far fa-bars'}
+                  icon={'menu'}
                   shape={'circular'}
                   inverted
                   // onClick={() => setOpened(true)}
                 />
               </Grid>
               <Grid item xs container alignItems={'center'} justify={'center'}>
-                <Typography variant={'h5'} weight={'900'} spacing={'big'}>
+                <Typography variant={'h5'} weight={'900'} spacing={'big'} to="/" component={RouterLink} style={{color: "white", textDecoration: "none"}}>
                   AMIGO
                 </Typography>
               </Grid>
@@ -103,7 +121,7 @@ const AmiLargeHeader = (props) => {
                 >
                   <Grid item>
                     <Button
-                      icon={'fas fa-search'}
+                      icon={'search'}
                       shape={'circular'}
                       inverted
                       onClick={handleSearchClick}
@@ -111,10 +129,13 @@ const AmiLargeHeader = (props) => {
                     <InputBase
                       inputRef={inputRef}
                       className={classes.searchInput}
+                      value={search}
+                      onChange={handleChangeSearch}
+                      onKeyUp={handleKeyPress} 
                     />
                   </Grid>
                   <Grid item>
-                    <Button icon={'far fa-user'} shape={'circular'} inverted onClick={handleMenu} />
+                    <Button icon={'perm_identity'} shape={'circular'} inverted onClick={handleMenu} />
                     <Menu
                       id="menu-appbar"
                       anchorEl={anchorEl}
@@ -131,13 +152,13 @@ const AmiLargeHeader = (props) => {
                       onClose={handleClose}
                     >
                       { !props.loggedIn ? [
-                        <MenuItem onClick={handleClose} component={Link}  to="/login">Login</MenuItem>, 
-                        <MenuItem onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>]
+                        <MenuItem key="login" onClick={handleClose} component={Link}  to="/login">Login</MenuItem>, 
+                        <MenuItem key="signup" onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>]
                          : 
                         [
-                          <MenuItem onClick={handleClose} component={Link}  to="/create">Create Article</MenuItem>,
-                          <MenuItem onClick={handleClose} component={Link}  to="/profile">Profile</MenuItem>,
-                          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                          <MenuItem key="create" onClick={handleClose} component={Link}  to="/create">Create Article</MenuItem>,
+                          <MenuItem key="profile" onClick={handleClose} component={Link}  to="/profile">Profile</MenuItem>,
+                          <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
                         ] 
                       }
                     </Menu>
@@ -168,6 +189,7 @@ const AmiLargeHeader = (props) => {
       >
         <Toolbar>
           <MegaMenu
+            history={props.history}
             menus={props.types.map(type => {
               return { label: type.name, _id: type._id }
             })}
@@ -185,12 +207,14 @@ function mapState(state) {
   const { loggedIn } = state.authentication;
   return { 
     loggedIn,
-    types: state.types.items
+    types: state.types.items,
+    q: state.search.q
   };
 }
 
 const actionCreators = {
-  logout: userActions.logout
+  logout: userActions.logout,
+  addSearch: searchActions.addSearch
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(AmiLargeHeader);

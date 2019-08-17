@@ -1,6 +1,5 @@
 import { sourceConstants } from '../_constants';
 import { sourceService } from '../_services';
-import { alertActions } from './';
 import { history } from '../_helpers';
 import { tagActions } from './tag.actions'
 import { typeActions } from './type.actions'

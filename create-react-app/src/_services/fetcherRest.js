@@ -1,7 +1,7 @@
 function updateOptions(body, options) {
     const update = { 
       ...options,
-      body: options.method != 'GET' ? JSON.stringify(body) : null,
+      body: options.method !== 'GET' ? JSON.stringify(body) : null,
       method: options.method ? options.method : 'POST',
       headers: {
         'Content-Type': 'application/json'
