@@ -17,16 +17,27 @@
           },
           '& .MuiCardContent-root': {
             textAlign: 'left',
-            padding: spacing(3),
+            padding: spacing(2),
           },
           '& .MuiDivider-root': {
-            margin: spacing(3, 0),
+            margin: spacing(2, 0),
           },
           '& .MuiTypography--heading': {
             fontWeight: 'bold',
+            lineHeight: "26px",
+            maxHeight: "52px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           },
           '& .MuiTypography--subheading': {
-            lineHeight: 1.8,
+            lineHeight: "1.4em",
+            maxHeight: "4.2em", 
+            display: "block",
+
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            // -webkit-box-orient: vertical;
+            // -webkit-line-clamp: N; /* number of lines to show */
           },
           '& .MuiAvatar-root': {
             display: 'inline-block',

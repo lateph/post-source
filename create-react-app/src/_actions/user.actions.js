@@ -23,7 +23,8 @@ function getListArticle() {
         const { userId } = getState().authentication.user
 
         searchService.getAll({
-            userId
+            userId,
+            disablePaging: true
             // tags,
             // type
         })

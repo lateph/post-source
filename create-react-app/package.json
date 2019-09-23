@@ -12,12 +12,15 @@
     "@material-ui/core": "^4.3.1",
     "@material-ui/icons": "^4.2.1",
     "@material-ui/styles": "^4.3.0",
+    "add": "^2.0.6",
     "clsx": "^1.0.4",
     "color": "^3.1.2",
+    "connected-react-router": "^6.5.2",
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
     "html-react-parser": "^0.9.1",
     "lodash": "^4.17.15",
+    "material-auto-rotating-carousel": "^3.0.2",
     "material-table": "^1.48.0",
     "moment": "^2.24.0",
     "query-string": "^6.8.2",
@@ -31,9 +34,12 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "latest",
     "react-select": "^3.0.4",
+    "react-swipeable-views": "^0.13.3",
     "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yarn": "^1.17.3"
   },
   "browserslist": {
     "production": [

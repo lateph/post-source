@@ -58,7 +58,7 @@ class List extends Component {
               }
           }
         ]}
-        title="Editable Example"
+        title="List"
         columns={this.state.columns}
         data={this.props.data}
       />

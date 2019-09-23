@@ -103,7 +103,7 @@ class Dashboard extends Component {
                     {/* <Typography>TOTAL 319 Source</Typography> */}
                 </Grid>
                 <Grid item xs style={{textAlign:"right"}}>
-                  <TwitterButton className={"default bottom"} variant={"outlined"} color={"secondary"} size={"large"}  component={Link}  to="/create">Create Article</TwitterButton>
+                  <TwitterButton className={"default bottom"} variant={"outlined"} color={"secondary"} size={"large"}  component={Link}  to="/create">Create</TwitterButton>
                 </Grid>
               </Grid>
             </Container>
@@ -128,31 +128,51 @@ class Dashboard extends Component {
                   <Grid container>
                     
                   </Grid>
-                  <Hidden smUp>
-                    <MobileSelector />
-                  </Hidden>
                   <Divider light />
                   <Grid container>
-                  <div style={{flexGrow: 1,display: 'flex',minHeight: 300}}>
-                    <Tabs
-                        orientation="vertical"
-                        variant="scrollable"
-                        value={this.state.tab}
-                        onChange={this.handleChange}
-                        aria-label="Vertical tabs example"
-                        style={{overflow:"visible"}}
-                        // className={classes.tabs}
-                    >
-                        <Tab label="User Profile" {...a11yProps(0)} />
-                        <Tab label="List Aricle" {...a11yProps(1)} />
-                    </Tabs>
-                    <TabPanel value={this.state.tab} index={0}>
-                        <ProfileUser />
-                    </TabPanel>
-                    <TabPanel value={this.state.tab} index={1} style={{width: '100%'}} >
-                        <ProfileListArticle style={{width: '100%'}} />
-                    </TabPanel>
-                    </div>
+                    <Hidden xsDown>
+                      <div style={{flexGrow: 1,display: 'flex',minHeight: 300}}>
+                        <Tabs
+                          orientation="vertical"
+                          variant="scrollable"
+                          value={this.state.tab}
+                          onChange={this.handleChange}
+                          aria-label="Vertical tabs example"
+                          style={{overflow:"visible"}}
+                          // className={classes.tabs}
+                        >
+                            <Tab label="User Profile" {...a11yProps(0)} />
+                            <Tab label="List Aricle" {...a11yProps(1)} />
+                        </Tabs>
+                        <TabPanel value={this.state.tab} index={0}>
+                            <ProfileUser />
+                        </TabPanel>
+                        <TabPanel value={this.state.tab} index={1} style={{width: '100%'}} >
+                            <ProfileListArticle style={{width: '100%'}} />
+                        </TabPanel>
+                      </div>
+                    </Hidden>
+                    <Hidden smUp>
+                      <div>
+                        <Tabs
+                          variant="scrollable"
+                          value={this.state.tab}
+                          onChange={this.handleChange}
+                          aria-label="Vertical tabs example"
+                          style={{overflow:"visible"}}
+                          // className={classes.tabs}
+                        >
+                            <Tab label="User Profile" {...a11yProps(0)} />
+                            <Tab label="List Aricle" {...a11yProps(1)} />
+                        </Tabs>
+                        <TabPanel value={this.state.tab} index={0}>
+                            <ProfileUser />
+                        </TabPanel>
+                        <TabPanel value={this.state.tab} index={1} style={{width: '100%'}} >
+                            <ProfileListArticle style={{width: '100%'}} />
+                        </TabPanel>
+                      </div>
+                    </Hidden>
                   </Grid>
                 </Paper>
               </Box>

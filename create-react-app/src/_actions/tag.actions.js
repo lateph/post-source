@@ -10,7 +10,7 @@ function getAll() {
 
         dispatch(request());
 
-        tagService.getAll()
+        return tagService.getAll()
             .then((tags) => {
                 dispatch(success(tags))
             })

@@ -17,19 +17,15 @@ import { userActions, searchActions } from '../../_actions';
 import { connect } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom';
 import queryString from 'query-string';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
 
-const useStyles = makeStyles(({ transitions }) => ({
-  searchInput: ({ searchAppeared }) => ({
-    width: searchAppeared ? 180 : 0,
-    opacity: searchAppeared ? 1 : 0,
-    transition: transitions.create(),
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    marginTop: searchAppeared ? 8 : 0,
-    marginLeft:searchAppeared ? 8: 0,
-    padding: searchAppeared ? '0 8px' : '0',
-    display: 'inline-block',
-    color: '#ffffff',
-  }),
+
+const useStyles = makeStyles(({ transitions, palette, spacing }) => ({
+ 
   secondAppBar: ({ trigger }) => ({
     zIndex: 1099,
     transition: transitions.create('top', {
@@ -41,6 +37,15 @@ const useStyles = makeStyles(({ transitions }) => ({
   appBarBg: {
     zIndex: 1098,
   },
+  button: {
+    color: palette.primary
+  },
+  searchInput: {
+    color: palette.primary,
+    margin: spacing(1),
+    padding: spacing(1),
+    backgroundColor: '#fff',
+  },
 }));
 
 const AmiLargeHeader = (props) => {
@@ -51,6 +56,20 @@ const AmiLargeHeader = (props) => {
   const [searchAppeared, setSearchAppeared] = useState(defSA);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles({ searchAppeared, trigger });
+
+  const handleSearchPress = (event) => {
+    // alert('asd')
+    // console.log(event)
+    // if(event.key === 'Enter'){
+      console.log(props)
+      if(props.history.location.pathname === '/'){
+        props.addSearch(search)
+      }
+      const s = queryString.stringify({ q: search});
+      props.history.push(`/?${s}`);
+      console.log('enter press here! ')
+    // }
+  }
   
   const handleSearchClick = () => {
     setSearchAppeared(!searchAppeared);
@@ -108,7 +127,7 @@ const AmiLargeHeader = (props) => {
               </Grid>
               <Grid item xs container alignItems={'center'} justify={'center'}>
                 <Typography variant={'h5'} weight={'900'} spacing={'big'} to="/" component={RouterLink} style={{color: "white", textDecoration: "none"}}>
-                  AMIGO
+                  POWERBUILDER RESOURCE
                 </Typography>
               </Grid>
               <Grid item xs>
@@ -120,48 +139,41 @@ const AmiLargeHeader = (props) => {
                   wrap={'nowrap'}
                 >
                   <Grid item>
-                    <Button
-                      icon={'search'}
-                      shape={'circular'}
-                      inverted
-                      onClick={handleSearchClick}
-                    />
-                    <InputBase
-                      inputRef={inputRef}
-                      className={classes.searchInput}
-                      value={search}
-                      onChange={handleChangeSearch}
-                      onKeyUp={handleKeyPress} 
-                    />
-                  </Grid>
-                  <Grid item>
-                    <Button icon={'perm_identity'} shape={'circular'} inverted onClick={handleMenu} />
-                    <Menu
-                      id="menu-appbar"
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={open}
-                      onClose={handleClose}
-                    >
-                      { !props.loggedIn ? [
-                        <MenuItem key="login" onClick={handleClose} component={Link}  to="/login">Login</MenuItem>, 
-                        <MenuItem key="signup" onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>]
-                         : 
-                        [
-                          <MenuItem key="create" onClick={handleClose} component={Link}  to="/create">Create Article</MenuItem>,
-                          <MenuItem key="profile" onClick={handleClose} component={Link}  to="/profile">Profile</MenuItem>,
-                          <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
-                        ] 
-                      }
-                    </Menu>
+                    {/*  */}
+                    { 
+                      !props.loggedIn ? 
+                      <Button color="inherit" component={Link}  to="/login">Sign in</Button> :
+                      <>
+                        <Button icon={'perm_identity'} shape={'circular'} inverted onClick={handleMenu} />
+                        <Menu
+                          id="menu-appbar"
+                          anchorEl={anchorEl}
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                          keepMounted
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                          open={open}
+                          onClose={handleClose}
+                        >
+                          { !props.loggedIn ? [
+                            <MenuItem key="login" onClick={handleClose} component={Link}  to="/login">Login</MenuItem>, 
+                            <MenuItem key="signup" onClick={handleClose} component={Link}  to="/signup">Register</MenuItem>]
+                            : 
+                            [
+                              <MenuItem key="create" onClick={handleClose} component={Link}  to="/create">Create Article</MenuItem>,
+                              <MenuItem key="profile" onClick={handleClose} component={Link}  to="/profile">Profile</MenuItem>,
+                              <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
+                            ] 
+                          }
+                        </Menu>
+                      
+                      </>
+                    }
                   </Grid>
                   {/* <Grid item>
                     <Button icon={'far fa-heart'} shape={'circular'} inverted />
@@ -187,14 +199,30 @@ const AmiLargeHeader = (props) => {
         position={'sticky'}
         className={classes.secondAppBar}
       >
-        <Toolbar>
-          <MegaMenu
-            history={props.history}
-            menus={props.types.map(type => {
-              return { label: type.name, _id: type._id }
-            })}
-          />
-        </Toolbar>
+        <Input
+          id="adornment-password"
+          type={'text'}
+          placeholder={'Type to search...'}
+          className={classes.searchInput}
+          value={search}
+          onChange={handleChangeSearch}
+          onKeyUp={handleKeyPress}
+          endAdornment={
+            <InputAdornment position="end">
+              { props.loading && <CircularProgress size={24} className={classes.button} color="secondary" /> }
+              { !props.loading && <IconButton
+                aria-label="toggle password visibility"
+                className={classes.button}
+                onClick={handleSearchPress}
+                // onMouseDown={handleMouseDownPassword}
+              >
+                <SearchIcon  className={classes.button}
+                />
+              </IconButton>
+            }
+            </InputAdornment>
+          }
+        />
       </AppBar>
     </>
   );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Hidden from '@material-ui/core/Hidden';
 import AmiMiniHeader from './AmiMiniHeader';
-import AmiLargeHeader from './AmiLargeHeader';
+import AmiLargeHeader from './NewHeader';
 import { withRouter } from "react-router-dom";
 
 

@@ -21,38 +21,29 @@ import { connect } from 'react-redux'
 import { searchActions } from './_actions';
 import queryString from 'query-string';
 import TablePagination from '@material-ui/core/TablePagination';
+import _ from 'lodash';
 
 class Dashboard extends Component {
   componentDidMount() {
-    const v = queryString.parse(this.props.location.search)
-    console.log("cuk",v)
-    if(v && v.c){
-      this.props.add(v.c)
-    }
-    else if(v && v.q){
-      this.props.addSearch(v.q)
-    }
-    else{
-      this.props.search()
+    // const v = queryString.parse(this.props.location.search, {arrayFormat: 'index'})
+    // console.log("cuk",v)
+    // if(v && v.tags){
+    //   this.props.addTags(v.tags)
+    // }
+    // else if(v && v.q){
+    //   this.props.addSearch(v.q)
+    // }
+    // else{
+    //   this.props.search()
+    // }
+    this.props.loadSearch()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.props.loadSearch()
     }
   }
-  // componentDidUpdate(nextProps){
-  //   console.log(nextProps)
-  //   const v = queryString.parse(nextProps.location.search)
-  //   console.log(v)
-
-  //   if (nextProps.location.state === 'loadBlogs') {
-  //     if(v.c){
-  //       this.props.add(v.c, false)
-  //     }
-  //     this.props.search()
-  //     // this.setState({
-  //     //   t: v.t,
-  //     //   c: v.c,
-  //     //   page: 0
-  //     // }, () => this.fetchBlog());
-  //   }
-  // }
 
   render() {
     return (
@@ -253,10 +244,10 @@ function mapState(state) {
 
 const actionCreators = {
   search: searchActions.search,
-  add: searchActions.addType,
   addSearch: searchActions.addSearch,
   changePage: searchActions.changePage,
   changePerPage: searchActions.changePerPage,
+  loadSearch: searchActions.loadSearch,
 };
 
 const connectedLoginPage = connect(mapState, actionCreators)(Dashboard);

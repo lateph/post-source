@@ -11,16 +11,16 @@ const Expander = ({ children, label }) => {
   const [open, setOpen] = useState(true);
   return (
     <>
-      <ListItem button onClick={() => setOpen(!open)}>
-        <Icon push={'right'}>
+      <ListItem button onClick={() => setOpen(!open)} >
+        <Icon push={'right'} style={{ fontSize: "0.875rem" }}>
           {open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
         </Icon>
         <ListItemText disableTypography>
-          <Typography>{label}</Typography>
+          <Typography  style={{ fontSize: "0.875rem" }}>{label}</Typography>
         </ListItemText>
       </ListItem>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <Box pl={{ xs: 2, md: 3 }} pb={2}>
+        <Box pl={{ xs: 0, md: 0 }} pb={2}>
           {children}
         </Box>
       </Collapse>

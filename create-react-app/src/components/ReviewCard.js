@@ -33,10 +33,10 @@ import { Link } from 'react-router-dom';
           <Typography className={'MuiTypography--subheading'} variant={'caption'}>
             {props.source.shortDesc}
           </Typography>
-          <Divider className={'MuiDivider-root'} light />
+          {/* <Divider className={'MuiDivider-root'} light />
           {faces.map(face => (
             <Avatar className={'MuiAvatar-root'} key={face} src={face} />
-          ))}
+          ))} */}
         </CardContent>
       </Card>
     </Link>

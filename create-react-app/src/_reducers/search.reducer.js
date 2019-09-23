@@ -37,6 +37,13 @@ export function search(state = {
           action._id
         ]
       };
+    case searchConstants.ADD_TAGS:
+      return {
+        ...state,
+        tags: [
+          ...action._ids
+        ]
+      };
     case searchConstants.ADD_TYPE:
       return {
         ...state,

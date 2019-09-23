@@ -9,7 +9,7 @@ function getAll() {
     return dispatch => {
         dispatch(request());
 
-        typeService.getAll()
+        return typeService.getAll()
             .then((types) => {
                 dispatch(success(types))
             })

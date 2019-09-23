@@ -5,7 +5,7 @@ export const searchService = {
     getAll,
 };
 
-function getAll({tags, type, userId, perPage, page, q}) {
+function getAll({tags, type, userId, perPage, page, q, disablePaging}) {
     const requestBody = {
         query: `
           query CreateUser($t: [String], $c: String, $u: String, $skip: Int, $limit: Int, $q: String){
@@ -25,7 +25,14 @@ function getAll({tags, type, userId, perPage, page, q}) {
             countSources(filter: {tags: $t, type: $c, creator: $u, q: $q})
           }
           `,
-          variables: {
+          variables: disablePaging ?  {
+            ..._.omitBy({
+              t: tags,
+              c: type,
+              u: userId,
+              q: q
+            }, _.isEmpty),
+          } : {
             ..._.omitBy({
               t: tags,
               c: type,

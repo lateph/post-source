@@ -8,8 +8,10 @@ import { types } from './types.reducer';
 import { tags } from './tags.reducer';
 import { sources } from './sources.reducer';
 import { search } from './search.reducer';
+import { home } from './home.reducer';
+import { connectRouter } from 'connected-react-router'
 
-const rootReducer = combineReducers({
+const rootReducer = (history) =>  combineReducers({
   authentication,
   registration,
   users,
@@ -17,7 +19,9 @@ const rootReducer = combineReducers({
   types,
   tags,
   sources,
-  search
+  search,
+  home,
+  router: connectRouter(history)
 });
 
 export default rootReducer;

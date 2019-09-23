@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Typography from './components/extensions/Typography';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter, Route, Redirect, Router } from 'react-router-dom';
-import HomePage from './AmigoHome'
+import Search from './AmigoHome'
+import HomePage from './Home'
 import Profile from './Profile'
 import LoginPage from './Login'
 import CreatePage from './Create'
@@ -11,6 +12,7 @@ import { typeActions, tagActions } from './_actions';
 import { connect } from 'react-redux'
 import Signup from './Register'
 import Blog from './Blog'
+import { ConnectedRouter } from 'connected-react-router'
 
 const url =
   // eslint-disable-next-line max-len
@@ -34,11 +36,12 @@ class App extends Component {
           <Helmet>
             <link href={url} rel="stylesheet" />
           </Helmet>
-          <Router history={history}>
+          <ConnectedRouter  history={history}>
               {/* {this.props.loggedIn === false && <Redirect from="/create" to="/login" />} */}
               {/* {this.props.loggedIn === false && <Redirect from="/update" to="/login" />} */}
               {/* {this.state.token && <Redirect from="/signup" to="/" />} */}
               <Route exact path="/" component={HomePage} />
+              <Route exact path="/search" component={Search} />
               <Route path="/login" component={LoginPage} />              
               <Route exact path='/signup' component={ Signup } />
               <Route exact path='/profile' component={ Profile } />
@@ -50,7 +53,7 @@ class App extends Component {
               <Route exact path='/signup' component={ Signup } />
               <Route exact path='/wizard' component={ Wizard } />
               <Route exact path='/cards' component={ Cards } /> */}
-            </Router>
+            </ConnectedRouter>
         </React.Fragment>
       </BrowserRouter>
     );
