@@ -17,7 +17,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-graphql": "^0.8.0",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "^6.0.0",
     "express-restify-mongoose": "^5.0.0",
     "formidable": "^1.2.1",
     "graphql": "^14.3.1",
