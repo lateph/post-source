@@ -23,7 +23,7 @@
     "graphql": "^14.3.1",
     "helmet": "^3.18.0",
     "jsonwebtoken": "^8.4.0",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.19",
     "method-override": "^3.0.0",
     "mongoose": "^5.3.15",
     "mongoose-plugin-cache": "^1.1.0",
