@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "feathers-client": "^2.4.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "ra-data-feathers": "^2.1.0",
