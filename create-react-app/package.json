@@ -19,7 +19,7 @@
     "draft-js": "^0.11.0",
     "draftjs-to-html": "^0.8.4",
     "html-react-parser": "^0.9.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "material-auto-rotating-carousel": "^3.0.2",
     "material-table": "^1.48.0",
     "moment": "^2.24.0",
