@@ -22,7 +22,7 @@
     "lodash": "^4.17.15",
     "material-auto-rotating-carousel": "^3.0.2",
     "material-table": "^1.48.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "query-string": "^6.8.2",
     "react": "latest",
     "react-dom": "latest",
