@@ -5,7 +5,7 @@
   "dependencies": {
     "feathers-client": "^2.4.0",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "prop-types": "^15.7.2",
     "ra-data-feathers": "^2.1.0",
     "ra-data-json-server": "^2.9.4",
